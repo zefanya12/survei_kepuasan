@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Survey Kepuasan Lapas</title>
+</head>
+<body>
+  <h2>Survey Kepuasan Layanan</h2>
+
+  <input type="text" id="nama" placeholder="Nama"><br><br>
+  <input type="text" id="alamat" placeholder="Alamat"><br><br>
+  <input type="text" id="nohp" placeholder="No HP"><br><br>
+
+  <h3>Pilih Rating:</h3>
+  <button onclick="kirim('Kurang')">😞</button>
+  <button onclick="kirim('Baik')">🙂</button>
+  <button onclick="kirim('Sangat Baik')">😄</button>
+
+  <script>
+    function kirim(rating) {
+      const data = {
+        nama: document.getElementById('nama').value,
+        alamat: document.getElementById('alamat').value,
+        nohp: document.getElementById('nohp').value,
+        rating: rating
+      };
+
+      fetch("URL_APPS_SCRIPT_KAMU", {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.text())
+      .then(res => {
+        alert("Terima kasih atas penilaian Anda!");
+      });
+    }
+  </script>
+</body>
+</html>
