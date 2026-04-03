@@ -1,518 +1,447 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Survey Kepuasan Layanan — Lapas</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Survey Kepuasan – Lapas Lirung</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
+    :root {
+      --navy:   #0d1b2a;
+      --gold:   #c9a84c;
+      --gold2:  #e8c96a;
+      --cream:  #f5f0e8;
+      --white:  #ffffff;
+      --gray:   #8a8f99;
+      --red:    #e05252;
+      --green:  #3dbf7c;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --navy: #0b1f3a;
-      --gold: #c9a84c;
-      --gold-light: #f0d080;
-      --white: #f9f7f2;
-      --card-bg: rgba(255,255,255,0.04);
-      --border: rgba(201,168,76,0.3);
-    }
-
     body {
-      font-family: 'DM Sans', sans-serif;
-      background-color: var(--navy);
       min-height: 100vh;
+      background: var(--navy);
+      font-family: 'Source Sans 3', sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
+      overflow-x: hidden;
     }
 
-    /* === BACKGROUND ATMOSPHERE === */
-    .bg-ring {
-      position: fixed;
-      border-radius: 50%;
-      border: 1px solid rgba(201,168,76,0.08);
-      animation: pulse-ring 8s ease-in-out infinite;
-      pointer-events: none;
-    }
-    .bg-ring:nth-child(1) { width: 500px; height: 500px; top: -150px; right: -150px; animation-delay: 0s; }
-    .bg-ring:nth-child(2) { width: 700px; height: 700px; bottom: -250px; left: -200px; animation-delay: 2s; }
-    .bg-ring:nth-child(3) { width: 300px; height: 300px; top: 40%; left: 30%; animation-delay: 4s; opacity: 0.5; }
-
-    @keyframes pulse-ring {
-      0%, 100% { transform: scale(1); opacity: 0.4; }
-      50% { transform: scale(1.05); opacity: 0.8; }
-    }
-
-    .gold-glow {
-      position: fixed;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
-      top: -100px; right: -100px;
-      pointer-events: none;
-    }
-
-    /* === CARD === */
-    .card {
-      position: relative;
-      z-index: 10;
-      background: rgba(11,31,58,0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 48px 40px 40px;
+    /* ── HEADER ── */
+    header {
       width: 100%;
-      max-width: 440px;
-      margin: 20px;
-      box-shadow:
-        0 0 0 1px rgba(201,168,76,0.1),
-        0 40px 80px rgba(0,0,0,0.5),
-        inset 0 1px 0 rgba(201,168,76,0.15);
-      animation: card-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    @keyframes card-in {
-      from { opacity: 0; transform: translateY(40px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* === HEADER === */
-    .header { text-align: center; margin-bottom: 32px; }
-
-    .logo-wrap {
-      width: 72px; height: 72px;
-      background: linear-gradient(135deg, var(--gold) 0%, #8b6914 100%);
-      border-radius: 20px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 32px;
-      box-shadow: 0 8px 24px rgba(201,168,76,0.35);
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      border: 1px solid var(--border);
-      padding: 4px 14px;
-      border-radius: 100px;
-      margin-bottom: 12px;
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--white);
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: rgba(249,247,242,0.45);
-      letter-spacing: 0.3px;
-    }
-
-    /* === DIVIDER === */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 24px 0;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border));
-    }
-    .divider::after { background: linear-gradient(to left, transparent, var(--border)); }
-    .divider span { font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
-
-    /* === FORM FIELDS === */
-    .field {
+      background: linear-gradient(135deg, #0d1b2a 0%, #162740 60%, #0d1b2a 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 28px 24px 22px;
+      text-align: center;
       position: relative;
-      margin-bottom: 14px;
-      animation: field-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-    .field:nth-child(1) { animation-delay: 0.15s; }
-    .field:nth-child(2) { animation-delay: 0.25s; }
-    .field:nth-child(3) { animation-delay: 0.35s; }
-
-    @keyframes field-in {
-      from { opacity: 0; transform: translateX(-12px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    .field-icon {
+    header::before {
+      content: '';
       position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 15px;
-      pointer-events: none;
-      opacity: 0.5;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 18px,
+        rgba(201,168,76,.04) 18px,
+        rgba(201,168,76,.04) 19px
+      );
+    }
+    .header-logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 10px;
+      display: block;
+    }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 4vw, 2rem);
+      color: var(--gold2);
+      letter-spacing: .04em;
+      line-height: 1.2;
+    }
+    header p {
+      color: rgba(245,240,232,.6);
+      font-size: .85rem;
+      margin-top: 4px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .gold-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 10px auto 0;
     }
 
+    /* ── CARD ── */
+    .card {
+      width: min(520px, 94vw);
+      background: var(--cream);
+      border-radius: 18px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
+      margin: 36px 0 48px;
+      overflow: hidden;
+    }
+    .card-top {
+      background: linear-gradient(135deg, #162740 0%, #1e3455 100%);
+      padding: 22px 28px 18px;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,168,76,.3);
+    }
+    .card-top h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold2);
+      font-size: 1.25rem;
+    }
+    .card-top p {
+      color: rgba(245,240,232,.65);
+      font-size: .82rem;
+      margin-top: 4px;
+    }
+    .card-body {
+      padding: 28px 30px 32px;
+    }
+
+    /* ── FORM ── */
+    .field { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 7px;
+    }
+    label span { color: var(--red); }
     input {
       width: 100%;
-      padding: 13px 16px 13px 40px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 12px;
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
+      padding: 12px 16px;
+      border: 1.5px solid #d4cfc6;
+      border-radius: 9px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: .97rem;
+      color: var(--navy);
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s;
       outline: none;
-      transition: all 0.25s ease;
     }
-
-    input::placeholder { color: rgba(249,247,242,0.3); }
-
     input:focus {
       border-color: var(--gold);
-      background: rgba(201,168,76,0.06);
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+      box-shadow: 0 0 0 3px rgba(201,168,76,.18);
     }
+    input::placeholder { color: #bbb; }
 
-    /* === RATING === */
+    /* ── EMOJI RATING ── */
     .rating-label {
-      font-size: 11px;
-      letter-spacing: 2px;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .1em;
       text-transform: uppercase;
-      color: rgba(249,247,242,0.4);
-      text-align: center;
-      margin-bottom: 16px;
+      color: var(--navy);
+      margin-bottom: 14px;
     }
-
-    .rating-row {
+    .emoji-row {
       display: flex;
+      gap: 14px;
       justify-content: center;
-      gap: 16px;
-      margin-bottom: 8px;
+      flex-wrap: wrap;
     }
-
-    .rating-btn {
+    .emoji-btn {
+      flex: 1;
+      min-width: 90px;
+      max-width: 140px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(201,168,76,0.18);
-      border-radius: 16px;
-      padding: 14px 18px;
+      gap: 8px;
+      padding: 16px 10px 14px;
+      border: 2px solid #d4cfc6;
+      border-radius: 14px;
+      background: #fff;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      flex: 1;
+      transition: all .22s ease;
+      user-select: none;
+    }
+    .emoji-btn:hover { transform: translateY(-4px); border-color: var(--gold); }
+    .emoji-btn .icon { font-size: 2.6rem; line-height: 1; transition: transform .2s; }
+    .emoji-btn:hover .icon { transform: scale(1.12); }
+    .emoji-btn .caption {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      color: var(--gray);
+      text-align: center;
+      transition: color .2s;
     }
 
-    .rating-btn:hover {
-      transform: translateY(-6px) scale(1.05);
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.08);
-      box-shadow: 0 12px 28px rgba(201,168,76,0.2);
-    }
+    /* Selected states */
+    .emoji-btn.kurang   { border-color: #e05252; background: #fff5f5; }
+    .emoji-btn.kurang .caption { color: #e05252; }
+    .emoji-btn.baik     { border-color: #f0a500; background: #fffbf0; }
+    .emoji-btn.baik .caption { color: #f0a500; }
+    .emoji-btn.sangat   { border-color: #3dbf7c; background: #f0fdf6; }
+    .emoji-btn.sangat .caption { color: #3dbf7c; }
 
-    .rating-btn:active { transform: scale(0.96); }
-
-    .rating-btn .emoji { font-size: 30px; display: block; line-height: 1; }
-    .rating-btn .label {
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      color: rgba(249,247,242,0.5);
-      white-space: nowrap;
-    }
-
-    .rating-btn.selected {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.12);
-      box-shadow: 0 0 0 2px rgba(201,168,76,0.25), 0 12px 28px rgba(201,168,76,0.2);
-    }
-
-    /* === SUBMIT BUTTON === */
+    /* ── SUBMIT ── */
     .btn-submit {
       width: 100%;
-      margin-top: 20px;
+      margin-top: 28px;
       padding: 15px;
-      background: linear-gradient(135deg, var(--gold) 0%, #a87b20 100%);
-      border: none;
-      border-radius: 14px;
+      background: linear-gradient(135deg, var(--gold) 0%, #b8933e 100%);
       color: var(--navy);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
       font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      letter-spacing: .06em;
+      border: none;
+      border-radius: 11px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 8px 24px rgba(201,168,76,0.3);
-      display: none;
+      box-shadow: 0 6px 24px rgba(201,168,76,.35);
+      transition: transform .18s, box-shadow .18s, opacity .18s;
     }
-
-    .btn-submit:hover {
+    .btn-submit:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 14px 32px rgba(201,168,76,0.45);
-      filter: brightness(1.05);
+      box-shadow: 0 10px 32px rgba(201,168,76,.45);
     }
+    .btn-submit:disabled { opacity: .55; cursor: not-allowed; }
 
-    .btn-submit:active { transform: scale(0.98); }
-    .btn-submit.visible { display: block; animation: btn-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-    @keyframes btn-in {
-      from { opacity: 0; transform: translateY(10px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* === SOCIAL === */
-    .social-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(201,168,76,0.12);
-    }
-
-    .social-btn {
-      width: 40px; height: 40px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(201,168,76,0.15);
-      display: flex; align-items: center; justify-content: center;
-      text-decoration: none;
-      font-size: 17px;
-      transition: all 0.2s ease;
-    }
-
-    .social-btn:hover {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.1);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(201,168,76,0.2);
-    }
-
-    /* === SUCCESS OVERLAY === */
-    .success-overlay {
+    /* ── SUCCESS ── */
+    .success-box {
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 16px;
+      padding: 48px 30px 44px;
       text-align: center;
-      padding: 20px 0;
     }
-
-    .success-overlay.show { display: flex; animation: card-in 0.6s ease both; }
-
-    .checkmark {
-      width: 72px; height: 72px;
-      background: linear-gradient(135deg, var(--gold) 0%, #8b6914 100%);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 32px rgba(201,168,76,0.4);
-      animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    .success-box .big-check {
+      font-size: 4rem;
+      animation: pop .4s cubic-bezier(.36,1.7,.6,1) forwards;
     }
-
     @keyframes pop {
-      from { transform: scale(0); }
-      to   { transform: scale(1); }
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
-
-    .success-overlay h2 {
+    .success-box h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      color: var(--white);
-      margin-bottom: 8px;
+      font-size: 1.5rem;
+      color: var(--navy);
     }
+    .success-box p { color: var(--gray); font-size: .92rem; max-width: 300px; }
+    .success-box .badge {
+      padding: 8px 22px;
+      border-radius: 50px;
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+    }
+    .badge-kurang { background: #ffe5e5; color: #c0392b; }
+    .badge-baik   { background: #fff8e1; color: #b8770a; }
+    .badge-sangat { background: #e9faf2; color: #1e8449; }
 
-    .success-overlay p { font-size: 13px; color: rgba(249,247,242,0.45); margin-bottom: 24px; }
-
-    .btn-reset {
-      padding: 11px 28px;
-      border: 1px solid var(--border);
-      border-radius: 100px;
+    .btn-ulang {
+      margin-top: 8px;
+      padding: 11px 30px;
       background: transparent;
-      color: var(--gold);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
+      border: 2px solid var(--gold);
+      color: var(--navy);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      border-radius: 9px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background .2s, color .2s;
+      font-size: .92rem;
+    }
+    .btn-ulang:hover { background: var(--gold); color: #fff; }
+
+    /* ── ERROR MSG ── */
+    .err-msg {
+      display: none;
+      color: var(--red);
+      font-size: .82rem;
+      margin-top: 10px;
+      text-align: center;
     }
 
-    .btn-reset:hover { background: rgba(201,168,76,0.1); }
-
-    /* Loading spinner */
+    /* ── SPINNER ── */
     .spinner {
       display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(11,31,58,0.3);
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,.2);
       border-top-color: var(--navy);
       border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      animation: spin .7s linear infinite;
       vertical-align: middle;
-      margin-right: 6px;
+      margin-right: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FOOTER ── */
+    footer {
+      color: rgba(255,255,255,.25);
+      font-size: .75rem;
+      text-align: center;
+      padding-bottom: 24px;
+      letter-spacing: .04em;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Background atmosphere -->
-  <div class="bg-ring"></div>
-  <div class="bg-ring"></div>
-  <div class="bg-ring"></div>
-  <div class="gold-glow"></div>
+<header>
+  <!-- Simple emblem SVG -->
+  <svg class="header-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" stroke="#c9a84c" stroke-width="2.5"/>
+    <circle cx="50" cy="50" r="38" stroke="#c9a84c" stroke-width="1" stroke-dasharray="4 3"/>
+    <path d="M50 20 L55 35 H70 L59 44 L63 59 L50 50 L37 59 L41 44 L30 35 H45 Z" fill="#c9a84c" opacity=".9"/>
+    <text x="50" y="76" text-anchor="middle" font-family="serif" font-size="9" fill="#c9a84c" letter-spacing="1">LAPAS LIRUNG</text>
+  </svg>
+  <h1>Lembaga Pemasyarakatan<br>Kelas IIB Lirung</h1>
+  <p>Sulawesi Utara &nbsp;·&nbsp; Kanwil Kemenkumham</p>
+  <div class="gold-line"></div>
+</header>
 
-  <div class="card">
-
-    <!-- MAIN FORM -->
-    <div id="formView">
-      <div class="header">
-        <div class="logo-wrap">⚖️</div>
-        <div class="badge">Kemenkumham RI</div>
-        <h1>Survey Kepuasan<br>Layanan</h1>
-        <p class="subtitle">Pendapat Anda sangat berarti bagi kami</p>
-      </div>
-
-      <div class="divider"><span>Data Diri</span></div>
-
-      <div class="field">
-        <span class="field-icon">👤</span>
-        <input id="nama" type="text" placeholder="Nama Lengkap" autocomplete="name">
-      </div>
-      <div class="field">
-        <span class="field-icon">📍</span>
-        <input id="alamat" type="text" placeholder="Alamat" autocomplete="street-address">
-      </div>
-      <div class="field">
-        <span class="field-icon">📱</span>
-        <input id="nohp" type="tel" placeholder="Nomor HP" autocomplete="tel">
-      </div>
-
-      <div class="divider"><span>Penilaian Anda</span></div>
-
-      <p class="rating-label">Bagaimana layanan kami hari ini?</p>
-      <div class="rating-row">
-        <button class="rating-btn" onclick="pilihRating(this, 'Kurang')">
-          <span class="emoji">😞</span>
-          <span class="label">Kurang</span>
-        </button>
-        <button class="rating-btn" onclick="pilihRating(this, 'Baik')">
-          <span class="emoji">🙂</span>
-          <span class="label">Baik</span>
-        </button>
-        <button class="rating-btn" onclick="pilihRating(this, 'Sangat Baik')">
-          <span class="emoji">😄</span>
-          <span class="label">Sangat Baik</span>
-        </button>
-      </div>
-
-      <button class="btn-submit" id="btnKirim" onclick="kirim()">Kirim Penilaian</button>
-
-      <div class="social-row">
-        <a class="social-btn" href="https://instagram.com" target="_blank" title="Instagram">📸</a>
-        <a class="social-btn" href="https://tiktok.com" target="_blank" title="TikTok">🎵</a>
-        <a class="social-btn" href="https://facebook.com" target="_blank" title="Facebook">📘</a>
-        <a class="social-btn" href="https://x.com" target="_blank" title="X (Twitter)">✖️</a>
-      </div>
-    </div>
-
-    <!-- SUCCESS VIEW -->
-    <div class="success-overlay" id="successView">
-      <div class="checkmark">✓</div>
-      <h2>Terima Kasih!</h2>
-      <p>Penilaian Anda telah berhasil dikirim.<br>Kami akan terus meningkatkan layanan.</p>
-      <button class="btn-reset" onclick="reset()">Isi Survey Lagi</button>
-    </div>
-
+<div class="card">
+  <div class="card-top">
+    <h2>Survey Kepuasan Pelayanan</h2>
+    <p>Pendapat Anda membantu kami meningkatkan kualitas layanan</p>
   </div>
 
-  <script>
-    let selectedRating = null;
+  <!-- FORM -->
+  <div class="card-body" id="formSection">
+    <div class="field">
+      <label for="nama">Nama Lengkap <span>*</span></label>
+      <input id="nama" type="text" placeholder="Masukkan nama lengkap Anda" autocomplete="name"/>
+    </div>
+    <div class="field">
+      <label for="alamat">Alamat <span>*</span></label>
+      <input id="alamat" type="text" placeholder="Kelurahan / Kecamatan / Kabupaten"/>
+    </div>
+    <div class="field">
+      <label for="nohp">No. HP / WhatsApp <span>*</span></label>
+      <input id="nohp" type="tel" placeholder="08xxxxxxxxxx" inputmode="numeric"/>
+    </div>
 
-    function pilihRating(btn, nilai) {
-      // Remove selected from all buttons
-      document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedRating = nilai;
+    <div class="field">
+      <div class="rating-label">Penilaian Kepuasan <span style="color:#e05252">*</span></div>
+      <div class="emoji-row">
+        <button class="emoji-btn" id="btn-kurang" onclick="pilihRating('Kurang','kurang','btn-kurang')">
+          <span class="icon">😞</span>
+          <span class="caption">Kurang</span>
+        </button>
+        <button class="emoji-btn" id="btn-baik" onclick="pilihRating('Baik','baik','btn-baik')">
+          <span class="icon">😊</span>
+          <span class="caption">Baik</span>
+        </button>
+        <button class="emoji-btn" id="btn-sangat" onclick="pilihRating('Sangat Baik','sangat','btn-sangat')">
+          <span class="icon">😄</span>
+          <span class="caption">Sangat Baik</span>
+        </button>
+      </div>
+    </div>
 
-      // Show submit button
-      const btnKirim = document.getElementById('btnKirim');
-      btnKirim.classList.add('visible');
+    <p class="err-msg" id="errMsg">⚠️ Mohon lengkapi semua isian dan pilih penilaian.</p>
+    <button class="btn-submit" id="btnSubmit" onclick="kirimData()">Kirim Survey</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-box" id="successSection">
+    <div class="big-check">✅</div>
+    <h3>Terima Kasih!</h3>
+    <p>Survey Anda telah berhasil dikirim dan dicatat. Kami menghargai masukan Anda.</p>
+    <span class="badge" id="ratingBadge"></span>
+    <button class="btn-ulang" onclick="resetForm()">Isi Survey Lagi</button>
+  </div>
+</div>
+
+<footer>© 2025 Lapas Kelas IIB Lirung &nbsp;·&nbsp; Direktorat Jenderal Pemasyarakatan</footer>
+
+<script>
+  // ──────────────────────────────────────────────
+  // GANTI URL INI dengan URL Google Apps Script Anda
+  // (lihat panduan di README.md)
+  // ──────────────────────────────────────────────
+  const APPS_SCRIPT_URL = "GANTI_DENGAN_URL_APPS_SCRIPT_ANDA";
+
+  let ratingTerpilih = "";
+
+  function pilihRating(nilai, cls, btnId) {
+    ratingTerpilih = nilai;
+    ["btn-kurang","btn-baik","btn-sangat"].forEach(id => {
+      document.getElementById(id).className = "emoji-btn";
+    });
+    document.getElementById(btnId).classList.add(cls);
+  }
+
+  async function kirimData() {
+    const nama  = document.getElementById("nama").value.trim();
+    const alamat= document.getElementById("alamat").value.trim();
+    const nohp  = document.getElementById("nohp").value.trim();
+    const err   = document.getElementById("errMsg");
+
+    if (!nama || !alamat || !nohp || !ratingTerpilih) {
+      err.style.display = "block";
+      return;
     }
+    err.style.display = "none";
 
-    function kirim() {
-      const nama   = document.getElementById('nama').value.trim();
-      const alamat = document.getElementById('alamat').value.trim();
-      const nohp   = document.getElementById('nohp').value.trim();
+    const btn = document.getElementById("btnSubmit");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Mengirim...';
 
-      if (!nama || !alamat || !nohp) {
-        // Shake the empty fields
-        ['nama','alamat','nohp'].forEach(id => {
-          const el = document.getElementById(id);
-          if (!el.value.trim()) {
-            el.style.borderColor = '#e05555';
-            el.style.boxShadow = '0 0 0 3px rgba(224,85,85,0.15)';
-            el.addEventListener('input', () => {
-              el.style.borderColor = '';
-              el.style.boxShadow = '';
-            }, { once: true });
-          }
-        });
-        return;
-      }
+    const payload = { nama, alamat, nohp, rating: ratingTerpilih };
 
-      if (!selectedRating) {
-        alert("Pilih penilaian terlebih dahulu.");
-        return;
-      }
-
-      const btn = document.getElementById('btnKirim');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Mengirim...';
-
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHBmZgIN8UPsJnLQwmolhpl_ha0CUQ5GtW7BWDqb38xkEdBMFtx6GSUCylJgx1kjoJfA/exec";
-
-      // Build URL params (Apps Script reads doGet e.parameter)
-      const params = new URLSearchParams({ nama, alamat, nohp, rating: selectedRating });
-
-      // Use no-cors image trick — reliable from GitHub Pages (avoids CORS block)
-      const img = new Image();
-      img.onload = img.onerror = () => tampilkanSukses();
-      img.src = SCRIPT_URL + "?" + params.toString();
-
-      // Fallback: also fire fetch no-cors (writes to sheet on Apps Script side)
-      fetch(SCRIPT_URL + "?" + params.toString(), { method: "GET", mode: "no-cors" })
-        .catch(() => {}); // CORS will block response but request still reaches Apps Script
-
-      // Show success after 1.5s regardless (no-cors gives no response)
-      setTimeout(() => tampilkanSukses(), 1500);
-    }
-
-    function tampilkanSukses() {
-      document.getElementById('formView').style.display = 'none';
-      document.getElementById('successView').classList.add('show');
-    }
-
-    function reset() {
-      document.getElementById('formView').style.display = 'block';
-      document.getElementById('successView').classList.remove('show');
-      document.getElementById('nama').value = '';
-      document.getElementById('alamat').value = '';
-      document.getElementById('nohp').value = '';
-      document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
-      selectedRating = null;
-      const btn = document.getElementById('btnKirim');
-      btn.classList.remove('visible');
+    try {
+      // Kirim ke Google Apps Script
+      await fetch(APPS_SCRIPT_URL, {
+        method : "POST",
+        mode   : "no-cors",   // Apps Script perlu no-cors
+        headers: { "Content-Type": "application/json" },
+        body   : JSON.stringify(payload)
+      });
+      tampilkanSukses(ratingTerpilih);
+    } catch (e) {
       btn.disabled = false;
-      btn.innerHTML = 'Kirim Penilaian';
+      btn.innerHTML = "Kirim Survey";
+      err.textContent = "⚠️ Gagal mengirim data. Periksa koneksi internet Anda.";
+      err.style.display = "block";
     }
-  </script>
+  }
+
+  function tampilkanSukses(rating) {
+    document.getElementById("formSection").style.display = "none";
+    const s = document.getElementById("successSection");
+    s.style.display = "flex";
+    const badge = document.getElementById("ratingBadge");
+    const map = {
+      "Kurang"    : { cls:"badge-kurang", icon:"😞", label:"Penilaian: Kurang" },
+      "Baik"      : { cls:"badge-baik",   icon:"😊", label:"Penilaian: Baik" },
+      "Sangat Baik": { cls:"badge-sangat", icon:"😄", label:"Penilaian: Sangat Baik" }
+    };
+    const info = map[rating] || map["Baik"];
+    badge.className = "badge " + info.cls;
+    badge.textContent = info.icon + " " + info.label;
+  }
+
+  function resetForm() {
+    document.getElementById("nama").value = "";
+    document.getElementById("alamat").value = "";
+    document.getElementById("nohp").value = "";
+    ratingTerpilih = "";
+    ["btn-kurang","btn-baik","btn-sangat"].forEach(id => {
+      document.getElementById(id).className = "emoji-btn";
+    });
+    document.getElementById("btnSubmit").disabled = false;
+    document.getElementById("btnSubmit").innerHTML = "Kirim Survey";
+    document.getElementById("errMsg").style.display = "none";
+    document.getElementById("successSection").style.display = "none";
+    document.getElementById("formSection").style.display = "block";
+  }
+</script>
 </body>
 </html>
