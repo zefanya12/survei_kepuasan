@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Survey Kepuasan Layanan — Lapas</title>
-  <link href="https://script.google.com/macros/library/d/1e7JNJs_d6a4HS_rVS8-S7kyCizCVcyGjYxtDWCEiDeKM6zP94f3A8_5G/1" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
     :root {
       --navy: #0b1f3a;
       --gold: #c9a84c;
@@ -16,7 +16,7 @@
       --card-bg: rgba(255,255,255,0.04);
       --border: rgba(201,168,76,0.3);
     }
-
+ 
     body {
       font-family: 'DM Sans', sans-serif;
       background-color: var(--navy);
@@ -27,7 +27,7 @@
       overflow: hidden;
       position: relative;
     }
-
+ 
     /* === BACKGROUND ATMOSPHERE === */
     .bg-ring {
       position: fixed;
@@ -39,12 +39,12 @@
     .bg-ring:nth-child(1) { width: 500px; height: 500px; top: -150px; right: -150px; animation-delay: 0s; }
     .bg-ring:nth-child(2) { width: 700px; height: 700px; bottom: -250px; left: -200px; animation-delay: 2s; }
     .bg-ring:nth-child(3) { width: 300px; height: 300px; top: 40%; left: 30%; animation-delay: 4s; opacity: 0.5; }
-
+ 
     @keyframes pulse-ring {
       0%, 100% { transform: scale(1); opacity: 0.4; }
       50% { transform: scale(1.05); opacity: 0.8; }
     }
-
+ 
     .gold-glow {
       position: fixed;
       width: 400px; height: 400px;
@@ -52,7 +52,7 @@
       top: -100px; right: -100px;
       pointer-events: none;
     }
-
+ 
     /* === CARD === */
     .card {
       position: relative;
@@ -71,15 +71,15 @@
         inset 0 1px 0 rgba(201,168,76,0.15);
       animation: card-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-
+ 
     @keyframes card-in {
       from { opacity: 0; transform: translateY(40px) scale(0.97); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-
+ 
     /* === HEADER === */
     .header { text-align: center; margin-bottom: 32px; }
-
+ 
     .logo-wrap {
       width: 72px; height: 72px;
       background: linear-gradient(135deg, var(--gold) 0%, #8b6914 100%);
@@ -89,7 +89,7 @@
       font-size: 32px;
       box-shadow: 0 8px 24px rgba(201,168,76,0.35);
     }
-
+ 
     .badge {
       display: inline-block;
       font-size: 10px;
@@ -102,7 +102,7 @@
       border-radius: 100px;
       margin-bottom: 12px;
     }
-
+ 
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: 26px;
@@ -111,13 +111,13 @@
       line-height: 1.2;
       margin-bottom: 8px;
     }
-
+ 
     .subtitle {
       font-size: 13px;
       color: rgba(249,247,242,0.45);
       letter-spacing: 0.3px;
     }
-
+ 
     /* === DIVIDER === */
     .divider {
       display: flex;
@@ -133,7 +133,7 @@
     }
     .divider::after { background: linear-gradient(to left, transparent, var(--border)); }
     .divider span { font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
-
+ 
     /* === FORM FIELDS === */
     .field {
       position: relative;
@@ -143,12 +143,12 @@
     .field:nth-child(1) { animation-delay: 0.15s; }
     .field:nth-child(2) { animation-delay: 0.25s; }
     .field:nth-child(3) { animation-delay: 0.35s; }
-
+ 
     @keyframes field-in {
       from { opacity: 0; transform: translateX(-12px); }
       to   { opacity: 1; transform: translateX(0); }
     }
-
+ 
     .field-icon {
       position: absolute;
       left: 14px;
@@ -158,7 +158,7 @@
       pointer-events: none;
       opacity: 0.5;
     }
-
+ 
     input {
       width: 100%;
       padding: 13px 16px 13px 40px;
@@ -171,15 +171,15 @@
       outline: none;
       transition: all 0.25s ease;
     }
-
+ 
     input::placeholder { color: rgba(249,247,242,0.3); }
-
+ 
     input:focus {
       border-color: var(--gold);
       background: rgba(201,168,76,0.06);
       box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
     }
-
+ 
     /* === RATING === */
     .rating-label {
       font-size: 11px;
@@ -189,14 +189,14 @@
       text-align: center;
       margin-bottom: 16px;
     }
-
+ 
     .rating-row {
       display: flex;
       justify-content: center;
       gap: 16px;
       margin-bottom: 8px;
     }
-
+ 
     .rating-btn {
       display: flex;
       flex-direction: column;
@@ -210,16 +210,16 @@
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       flex: 1;
     }
-
+ 
     .rating-btn:hover {
       transform: translateY(-6px) scale(1.05);
       border-color: var(--gold);
       background: rgba(201,168,76,0.08);
       box-shadow: 0 12px 28px rgba(201,168,76,0.2);
     }
-
+ 
     .rating-btn:active { transform: scale(0.96); }
-
+ 
     .rating-btn .emoji { font-size: 30px; display: block; line-height: 1; }
     .rating-btn .label {
       font-size: 10px;
@@ -227,13 +227,13 @@
       color: rgba(249,247,242,0.5);
       white-space: nowrap;
     }
-
+ 
     .rating-btn.selected {
       border-color: var(--gold);
       background: rgba(201,168,76,0.12);
       box-shadow: 0 0 0 2px rgba(201,168,76,0.25), 0 12px 28px rgba(201,168,76,0.2);
     }
-
+ 
     /* === SUBMIT BUTTON === */
     .btn-submit {
       width: 100%;
@@ -253,21 +253,21 @@
       box-shadow: 0 8px 24px rgba(201,168,76,0.3);
       display: none;
     }
-
+ 
     .btn-submit:hover {
       transform: translateY(-2px);
       box-shadow: 0 14px 32px rgba(201,168,76,0.45);
       filter: brightness(1.05);
     }
-
+ 
     .btn-submit:active { transform: scale(0.98); }
     .btn-submit.visible { display: block; animation: btn-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
+ 
     @keyframes btn-in {
       from { opacity: 0; transform: translateY(10px) scale(0.95); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-
+ 
     /* === SOCIAL === */
     .social-row {
       display: flex;
@@ -277,7 +277,7 @@
       padding-top: 24px;
       border-top: 1px solid rgba(201,168,76,0.12);
     }
-
+ 
     .social-btn {
       width: 40px; height: 40px;
       border-radius: 12px;
@@ -288,14 +288,14 @@
       font-size: 17px;
       transition: all 0.2s ease;
     }
-
+ 
     .social-btn:hover {
       border-color: var(--gold);
       background: rgba(201,168,76,0.1);
       transform: translateY(-3px);
       box-shadow: 0 6px 16px rgba(201,168,76,0.2);
     }
-
+ 
     /* === SUCCESS OVERLAY === */
     .success-overlay {
       display: none;
@@ -305,9 +305,9 @@
       text-align: center;
       padding: 20px 0;
     }
-
+ 
     .success-overlay.show { display: flex; animation: card-in 0.6s ease both; }
-
+ 
     .checkmark {
       width: 72px; height: 72px;
       background: linear-gradient(135deg, var(--gold) 0%, #8b6914 100%);
@@ -318,21 +318,21 @@
       box-shadow: 0 8px 32px rgba(201,168,76,0.4);
       animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
     }
-
+ 
     @keyframes pop {
       from { transform: scale(0); }
       to   { transform: scale(1); }
     }
-
+ 
     .success-overlay h2 {
       font-family: 'Playfair Display', serif;
       font-size: 22px;
       color: var(--white);
       margin-bottom: 8px;
     }
-
+ 
     .success-overlay p { font-size: 13px; color: rgba(249,247,242,0.45); margin-bottom: 24px; }
-
+ 
     .btn-reset {
       padding: 11px 28px;
       border: 1px solid var(--border);
@@ -344,9 +344,9 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-
+ 
     .btn-reset:hover { background: rgba(201,168,76,0.1); }
-
+ 
     /* Loading spinner */
     .spinner {
       display: inline-block;
@@ -362,15 +362,15 @@
   </style>
 </head>
 <body>
-
+ 
   <!-- Background atmosphere -->
   <div class="bg-ring"></div>
   <div class="bg-ring"></div>
   <div class="bg-ring"></div>
   <div class="gold-glow"></div>
-
+ 
   <div class="card">
-
+ 
     <!-- MAIN FORM -->
     <div id="formView">
       <div class="header">
@@ -379,9 +379,9 @@
         <h1>Survey Kepuasan<br>Layanan</h1>
         <p class="subtitle">Pendapat Anda sangat berarti bagi kami</p>
       </div>
-
+ 
       <div class="divider"><span>Data Diri</span></div>
-
+ 
       <div class="field">
         <span class="field-icon">👤</span>
         <input id="nama" type="text" placeholder="Nama Lengkap" autocomplete="name">
@@ -394,9 +394,9 @@
         <span class="field-icon">📱</span>
         <input id="nohp" type="tel" placeholder="Nomor HP" autocomplete="tel">
       </div>
-
+ 
       <div class="divider"><span>Penilaian Anda</span></div>
-
+ 
       <p class="rating-label">Bagaimana layanan kami hari ini?</p>
       <div class="rating-row">
         <button class="rating-btn" onclick="pilihRating(this, 'Kurang')">
@@ -412,9 +412,9 @@
           <span class="label">Sangat Baik</span>
         </button>
       </div>
-
+ 
       <button class="btn-submit" id="btnKirim" onclick="kirim()">Kirim Penilaian</button>
-
+ 
       <div class="social-row">
         <a class="social-btn" href="https://instagram.com" target="_blank" title="Instagram">📸</a>
         <a class="social-btn" href="https://tiktok.com" target="_blank" title="TikTok">🎵</a>
@@ -422,7 +422,7 @@
         <a class="social-btn" href="https://x.com" target="_blank" title="X (Twitter)">✖️</a>
       </div>
     </div>
-
+ 
     <!-- SUCCESS VIEW -->
     <div class="success-overlay" id="successView">
       <div class="checkmark">✓</div>
@@ -430,28 +430,28 @@
       <p>Penilaian Anda telah berhasil dikirim.<br>Kami akan terus meningkatkan layanan.</p>
       <button class="btn-reset" onclick="reset()">Isi Survey Lagi</button>
     </div>
-
+ 
   </div>
-
+ 
   <script>
     let selectedRating = null;
-
+ 
     function pilihRating(btn, nilai) {
       // Remove selected from all buttons
       document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
       selectedRating = nilai;
-
+ 
       // Show submit button
       const btnKirim = document.getElementById('btnKirim');
       btnKirim.classList.add('visible');
     }
-
+ 
     function kirim() {
       const nama   = document.getElementById('nama').value.trim();
       const alamat = document.getElementById('alamat').value.trim();
       const nohp   = document.getElementById('nohp').value.trim();
-
+ 
       if (!nama || !alamat || !nohp) {
         // Shake the empty fields
         ['nama','alamat','nohp'].forEach(id => {
@@ -467,32 +467,39 @@
         });
         return;
       }
-
+ 
       if (!selectedRating) {
         alert("Pilih penilaian terlebih dahulu.");
         return;
       }
-
+ 
       const btn = document.getElementById('btnKirim');
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Mengirim...';
-
-      const data = { nama, alamat, nohp, rating: selectedRating };
-
-      fetch("URL_APPS_SCRIPT", {
-        method: "POST",
-        body: JSON.stringify(data)
-      })
-      .then(res => res.text())
-      .then(() => tampilkanSukses())
-      .catch(() => tampilkanSukses()); // show success even on network err for demo
+ 
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxnyVG9GyAj-Q6pdI5itNdloev8rSnw0arA84zsKOrRZVVA6k5sFANV93jrZ84sOmH6XA/exec";
+ 
+      // Build URL params (Apps Script reads doGet e.parameter)
+      const params = new URLSearchParams({ nama, alamat, nohp, rating: selectedRating });
+ 
+      // Use no-cors image trick — reliable from GitHub Pages (avoids CORS block)
+      const img = new Image();
+      img.onload = img.onerror = () => tampilkanSukses();
+      img.src = SCRIPT_URL + "?" + params.toString();
+ 
+      // Fallback: also fire fetch no-cors (writes to sheet on Apps Script side)
+      fetch(SCRIPT_URL + "?" + params.toString(), { method: "GET", mode: "no-cors" })
+        .catch(() => {}); // CORS will block response but request still reaches Apps Script
+ 
+      // Show success after 1.5s regardless (no-cors gives no response)
+      setTimeout(() => tampilkanSukses(), 1500);
     }
-
+ 
     function tampilkanSukses() {
       document.getElementById('formView').style.display = 'none';
       document.getElementById('successView').classList.add('show');
     }
-
+ 
     function reset() {
       document.getElementById('formView').style.display = 'block';
       document.getElementById('successView').classList.remove('show');
@@ -509,3 +516,4 @@
   </script>
 </body>
 </html>
+ 
