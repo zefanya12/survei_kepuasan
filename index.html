@@ -4,272 +4,286 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Survey Kepuasan – Lapas Lirung</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --navy:    #0a1628;
-      --navy2:   #112240;
-      --navy3:   #1a3460;
-      --gold:    #c9a84c;
-      --gold2:   #e8c96a;
-      --gold3:   #f5dfa0;
-      --cream:   #faf7f2;
-      --white:   #ffffff;
-      --gray:    #7a8299;
+      --blue:    #5478FF;
+      --blue2:   #7090ff;
+      --blue3:   #a8bcff;
+      --blue-dim:#2a3f99;
+      --bg:      #f4f6ff;
+      --bg2:     #eaedff;
+      --surface: #ffffff;
+      --navy:    #0f1d3a;
+      --navy2:   #1e2f5a;
+      --text:    #1a2444;
+      --muted:   #7a88b0;
+      --light:   #c8d0f0;
       --red:     #e05252;
       --green:   #3dbf7c;
-      --glow:    rgba(201,168,76,.18);
+      --yellow:  #f0a500;
+      --border:  rgba(84,120,255,0.13);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
-      background: var(--navy);
-      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       overflow-x: hidden;
+      color: var(--text);
     }
 
-    /* ── ANIMATED BG ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 10%, rgba(201,168,76,.07) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 80% 80%, rgba(26,52,96,.6) 0%, transparent 70%),
-        radial-gradient(ellipse 80% 40% at 50% 50%, rgba(10,22,40,1) 0%, transparent 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* floating orbs */
-    .orb {
+    /* ── BG blobs ── */
+    .blob {
       position: fixed;
       border-radius: 50%;
-      filter: blur(60px);
-      opacity: .12;
+      filter: blur(80px);
       pointer-events: none;
       z-index: 0;
-      animation: drift 14s ease-in-out infinite alternate;
+      animation: blobDrift 18s ease-in-out infinite alternate;
     }
-    .orb1 { width:320px; height:320px; background:var(--gold); top:-80px; left:-100px; animation-delay:0s; }
-    .orb2 { width:200px; height:200px; background:#4a90d9; bottom:10%; right:-60px; animation-delay:-6s; }
-    .orb3 { width:160px; height:160px; background:var(--gold2); bottom:30%; left:5%; animation-delay:-3s; }
-    @keyframes drift {
+    .blob1 { width:480px;height:480px; background:rgba(84,120,255,.12); top:-120px; left:-140px; }
+    .blob2 { width:360px;height:360px; background:rgba(84,120,255,.08); bottom:-80px; right:-80px; animation-delay:-8s; }
+    .blob3 { width:240px;height:240px; background:rgba(61,191,124,.06); top:40%; left:60%; animation-delay:-4s; }
+    @keyframes blobDrift {
       from { transform: translate(0,0) scale(1); }
-      to   { transform: translate(30px,20px) scale(1.08); }
+      to   { transform: translate(24px,18px) scale(1.06); }
     }
 
-    /* ── HEADER ── */
-    header {
+    /* ── LAYOUT ── */
+    .page-wrap {
       position: relative;
       z-index: 1;
-      width: 100%;
-      padding: 40px 24px 32px;
-      text-align: center;
+      width: min(900px, 96vw);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin: 48px auto 48px;
+      align-items: start;
     }
 
-    .header-inner {
-      max-width: 520px;
-      margin: 0 auto;
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: sticky;
+      top: 40px;
     }
 
-    .emblem-ring {
-      width: 86px; height: 86px;
-      margin: 0 auto 18px;
-      position: relative;
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .logo-wrap {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      background: var(--blue);
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 32px rgba(84,120,255,.3);
+      position: relative;
+      overflow: hidden;
     }
-    .emblem-ring::before {
+    .logo-wrap::before {
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 50%;
-      border: 2px solid var(--gold);
-      animation: rotateBorder 8s linear infinite;
-      background: conic-gradient(from 0deg, transparent 70%, var(--gold2) 85%, transparent 100%);
+      background: linear-gradient(135deg, rgba(255,255,255,.2) 0%, transparent 60%);
     }
-    @keyframes rotateBorder {
-      to { transform: rotate(360deg); }
-    }
-    .emblem-ring img,
-    .emblem-ring svg.logo-placeholder {
-      width: 66px; height: 66px;
-      border-radius: 50%;
+    .logo-wrap img {
+      width: 52px; height: 52px;
+      border-radius: 12px;
       position: relative; z-index: 1;
-      background: var(--navy2);
+      object-fit: contain;
     }
-    .emblem-ring svg.logo-placeholder {
-      display: flex;
+    .logo-placeholder-svg {
+      position: relative; z-index: 1;
     }
 
-    .tagline-chip {
+    .chip {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      background: rgba(201,168,76,.12);
-      border: 1px solid rgba(201,168,76,.3);
-      border-radius: 50px;
-      padding: 5px 16px;
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--gold2);
-      margin-bottom: 14px;
-    }
-    .tagline-chip::before { content:'●'; font-size:.5rem; }
-
-    header h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(1.5rem, 5vw, 2.2rem);
-      color: var(--white);
-      line-height: 1.2;
-      letter-spacing: -.01em;
-    }
-    header h1 em {
-      font-style: italic;
-      color: var(--gold2);
-    }
-    header .sub {
-      color: rgba(255,255,255,.4);
-      font-size: .8rem;
-      margin-top: 8px;
+      gap: 6px;
+      background: rgba(84,120,255,.1);
+      border: 1px solid rgba(84,120,255,.2);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: .7rem;
+      font-weight: 700;
       letter-spacing: .1em;
       text-transform: uppercase;
+      color: var(--blue);
+      width: fit-content;
+    }
+    .chip::before { content:'●'; font-size:.45rem; }
+
+    .brand-block h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      color: var(--navy);
+      line-height: 1.15;
+    }
+    .brand-block h1 em {
+      font-style: italic;
+      color: var(--blue);
+    }
+    .brand-block .inst {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    .gold-divider {
+    /* social links */
+    .social-stack {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 18px auto 0;
-      max-width: 200px;
+      flex-direction: column;
+      gap: 8px;
     }
-    .gold-divider span { flex:1; height:1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-    .gold-divider i { color: var(--gold); font-size:.6rem; }
-
-    /* ── SOCIAL BAR ── */
-    .social-bar {
-      position: relative; z-index: 1;
+    .social-stack-label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .soc-row {
       display: flex;
-      gap: 10px;
-      justify-content: center;
       flex-wrap: wrap;
-      margin: 6px auto 0;
-      max-width: 520px;
-      padding: 0 16px;
+      gap: 8px;
     }
-
     .soc-btn {
       display: flex;
       align-items: center;
       gap: 7px;
-      padding: 7px 14px;
-      border-radius: 50px;
+      padding: 8px 14px;
+      border-radius: 10px;
       text-decoration: none;
       font-size: .75rem;
       font-weight: 600;
-      letter-spacing: .04em;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.7);
-      transition: all .22s ease;
-      backdrop-filter: blur(8px);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      transition: all .2s ease;
+      box-shadow: 0 2px 8px rgba(84,120,255,.06);
     }
-    .soc-btn svg { width:15px; height:15px; flex-shrink:0; }
-    .soc-btn:hover { transform: translateY(-2px); }
+    .soc-btn svg { width:14px; height:14px; flex-shrink:0; }
+    .soc-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(84,120,255,.15); }
+    .soc-btn.ig:hover { background:#e1306c; border-color:#e1306c; color:#fff; }
+    .soc-btn.tt:hover { background:#010101; border-color:#69c9d0; color:#fff; }
+    .soc-btn.fb:hover { background:#1877f2; border-color:#1877f2; color:#fff; }
+    .soc-btn.tw:hover { background:#000; border-color:#555; color:#fff; }
+    .soc-btn.yt:hover { background:#ff0000; border-color:#ff0000; color:#fff; }
 
-    .soc-btn.ig:hover  { background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af); border-color:transparent; color:#fff; }
-    .soc-btn.tt:hover  { background: #010101; border-color: #69c9d0; color:#fff; }
-    .soc-btn.fb:hover  { background: #1877f2; border-color:transparent; color:#fff; }
-    .soc-btn.tw:hover  { background: #000; border-color: #fff; color:#fff; }
-    .soc-btn.yt:hover  { background: #ff0000; border-color:transparent; color:#fff; }
+    /* info card */
+    .info-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 4px 24px rgba(84,120,255,.07);
+    }
+    .info-card-title {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(84,120,255,.07);
+    }
+    .info-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-item:first-of-type { padding-top: 0; }
+    .info-icon {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: rgba(84,120,255,.08);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .info-text { font-size: .82rem; color: var(--text); font-weight: 500; }
+    .info-sub  { font-size: .73rem; color: var(--muted); margin-top: 2px; }
 
-    /* ── CARD ── */
+    /* ── RIGHT PANEL (FORM CARD) ── */
     .card {
-      position: relative; z-index: 1;
-      width: min(520px, 94vw);
-      margin: 32px 0 16px;
+      background: var(--surface);
       border-radius: 24px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 8px 48px rgba(84,120,255,.1);
       overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(201,168,76,.2),
-        0 32px 80px rgba(0,0,0,.6),
-        0 0 60px rgba(201,168,76,.06);
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 24px;
-      padding: 1px;
-      background: linear-gradient(145deg, rgba(201,168,76,.5), transparent 50%, rgba(201,168,76,.2));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
     }
 
     .card-header {
-      background: linear-gradient(160deg, #162740 0%, #1a3460 100%);
-      padding: 26px 30px 22px;
+      background: var(--blue);
+      padding: 26px 28px;
       position: relative;
       overflow: hidden;
     }
-    .card-header::after {
+    .card-header::before {
       content: '';
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(201,168,76,.4), transparent);
-    }
-    .card-header-pattern {
-      position: absolute;
       inset: 0;
-      opacity: .04;
-      background-image: repeating-linear-gradient(
-        60deg,
-        rgba(201,168,76,1) 0px, rgba(201,168,76,1) 1px,
-        transparent 1px, transparent 20px
-      );
+      background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
     }
+    .card-header-dots {
+      position: absolute;
+      right: -30px; top: -30px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 40px solid rgba(255,255,255,.06);
+    }
+    .card-header-dots2 {
+      position: absolute;
+      right: 40px; bottom: -40px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 20px solid rgba(255,255,255,.05);
+    }
+
+    .step-row {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .step-dot {
+      width: 22px; height: 5px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.25);
+      transition: all .3s ease;
+    }
+    .step-dot.active { background: rgba(255,255,255,.9); width: 36px; }
+
     .card-header h2 {
-      font-family: 'DM Serif Display', serif;
-      color: var(--gold2);
-      font-size: 1.2rem;
+      font-family: 'Instrument Serif', serif;
+      color: #fff;
+      font-size: 1.3rem;
       position: relative;
     }
     .card-header p {
-      color: rgba(245,240,232,.5);
+      color: rgba(255,255,255,.65);
       font-size: .8rem;
       margin-top: 5px;
       position: relative;
     }
 
-    .step-indicator {
-      position: absolute;
-      top: 22px; right: 28px;
-      display: flex;
-      gap: 5px;
-    }
-    .step-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(201,168,76,.3);
-      transition: background .3s, transform .3s;
-    }
-    .step-dot.active { background: var(--gold2); transform: scale(1.4); }
-
-    /* ── FORM BODY ── */
+    /* ── FORM ── */
     .card-body {
-      background: var(--cream);
-      padding: 28px 28px 32px;
+      padding: 28px;
     }
 
     .field { margin-bottom: 18px; }
@@ -278,131 +292,101 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .12em;
+      font-size: .71rem;
+      font-weight: 700;
+      letter-spacing: .09em;
       text-transform: uppercase;
-      color: var(--navy);
+      color: var(--navy2);
       margin-bottom: 8px;
     }
-    label .lbl-icon {
-      width: 18px; height: 18px;
-      background: var(--navy);
-      border-radius: 5px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    label .lbl-icon svg { width:10px; height:10px; fill:var(--gold2); }
-    label .req { color: var(--red); margin-left:2px; }
+    label .req { color: var(--red); }
 
-    .input-wrap {
-      position: relative;
-    }
+    .input-wrap { position: relative; }
     input {
       width: 100%;
       padding: 13px 16px 13px 44px;
-      border: 1.5px solid rgba(10,22,40,.12);
+      border: 1.5px solid rgba(84,120,255,.15);
       border-radius: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: .95rem;
-      color: var(--navy);
-      background: #fff;
-      transition: border-color .2s, box-shadow .2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .9rem;
+      color: var(--text);
+      background: var(--bg);
+      transition: all .2s;
       outline: none;
     }
     input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 4px rgba(201,168,76,.1);
+      border-color: var(--blue);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(84,120,255,.1);
     }
-    input::placeholder { color: #bbb; font-weight: 300; }
+    input::placeholder { color: var(--light); font-weight: 400; }
 
     .input-icon {
       position: absolute;
       left: 14px; top: 50%;
       transform: translateY(-50%);
-      width: 18px; height: 18px;
-      color: var(--gray);
+      width: 17px; height: 17px;
+      color: var(--blue3);
       pointer-events: none;
     }
 
     /* ── RATING ── */
     .rating-label {
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .12em;
+      font-size: .71rem;
+      font-weight: 700;
+      letter-spacing: .09em;
       text-transform: uppercase;
-      color: var(--navy);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--navy2);
+      margin-bottom: 12px;
     }
 
     .emoji-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
     }
 
     .emoji-btn {
-      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 18px 10px 16px;
-      border: 1.5px solid rgba(10,22,40,.1);
+      gap: 6px;
+      padding: 16px 8px 14px;
+      border: 1.5px solid rgba(84,120,255,.12);
       border-radius: 16px;
-      background: #fff;
+      background: var(--bg);
       cursor: pointer;
-      transition: all .25s cubic-bezier(.34,1.56,.64,1);
+      transition: all .22s cubic-bezier(.34,1.56,.64,1);
       user-select: none;
-      overflow: hidden;
+      position: relative;
     }
-    .emoji-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity .25s;
-    }
-    .emoji-btn:hover { transform: translateY(-4px) scale(1.02); }
-    .emoji-btn .icon { font-size: 2.6rem; line-height: 1; transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
-    .emoji-btn:hover .icon { transform: scale(1.2) rotate(-5deg); }
-    .emoji-btn .caption {
-      font-size: .76rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      color: var(--gray);
-      transition: color .2s;
-    }
-    .emoji-btn .caption-sub {
-      font-size: .66rem;
-      color: #bbb;
-      font-weight: 400;
-    }
+    .emoji-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(84,120,255,.12); }
+    .emoji-btn .icon { font-size: 2.2rem; line-height: 1; transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+    .emoji-btn:hover .icon { transform: scale(1.15); }
+    .emoji-btn .caption { font-size: .72rem; font-weight: 700; color: var(--muted); transition: color .2s; }
+    .emoji-btn .caption-sub { font-size: .62rem; color: #bbb; }
 
-    /* Selected */
-    .emoji-btn.kurang { border-color: #e05252; background: #fff5f5; box-shadow: 0 6px 20px rgba(224,82,82,.15); }
-    .emoji-btn.kurang .caption { color: #e05252; }
-    .emoji-btn.baik   { border-color: #f0a500; background: #fffbf0; box-shadow: 0 6px 20px rgba(240,165,0,.15); }
-    .emoji-btn.baik .caption   { color: #f0a500; }
-    .emoji-btn.sangat { border-color: #3dbf7c; background: #f0fdf6; box-shadow: 0 6px 20px rgba(61,191,124,.15); }
-    .emoji-btn.sangat .caption { color: #3dbf7c; }
+    .emoji-btn.sel-kurang { border-color:#e05252; background:#fff5f5; box-shadow: 0 6px 20px rgba(224,82,82,.12); }
+    .emoji-btn.sel-kurang .caption { color:#e05252; }
+    .emoji-btn.sel-baik   { border-color:var(--yellow); background:#fffbf0; box-shadow: 0 6px 20px rgba(240,165,0,.12); }
+    .emoji-btn.sel-baik .caption   { color:var(--yellow); }
+    .emoji-btn.sel-sangat { border-color:var(--green); background:#f0fdf6; box-shadow: 0 6px 20px rgba(61,191,124,.12); }
+    .emoji-btn.sel-sangat .caption { color:var(--green); }
 
-    /* Check badge on selected */
-    .emoji-btn.kurang::after, .emoji-btn.baik::after, .emoji-btn.sangat::after {
+    .emoji-btn.sel-kurang::after,
+    .emoji-btn.sel-baik::after,
+    .emoji-btn.sel-sangat::after {
       content: '✓';
       position: absolute;
-      top: 7px; right: 9px;
-      font-size: .65rem;
-      font-weight: 700;
+      top: 7px; right: 8px;
+      font-size: .58rem; font-weight: 800;
       width: 16px; height: 16px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
     }
-    .emoji-btn.kurang::after { background: #e05252; color: #fff; }
-    .emoji-btn.baik::after   { background: #f0a500; color: #fff; }
-    .emoji-btn.sangat::after { background: #3dbf7c; color: #fff; }
+    .emoji-btn.sel-kurang::after { background:#e05252; color:#fff; }
+    .emoji-btn.sel-baik::after   { background:var(--yellow); color:#fff; }
+    .emoji-btn.sel-sangat::after { background:var(--green); color:#fff; }
 
     /* ── ERROR ── */
     .err-msg {
@@ -414,7 +398,7 @@
       border-radius: 10px;
       padding: 10px 14px;
       color: var(--red);
-      font-size: .82rem;
+      font-size: .8rem;
       font-weight: 500;
       margin-top: 12px;
     }
@@ -422,17 +406,18 @@
     /* ── SUBMIT ── */
     .btn-submit {
       width: 100%;
-      margin-top: 24px;
-      padding: 16px;
-      background: linear-gradient(135deg, #c9a84c 0%, #9e7b30 100%);
-      color: var(--navy);
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.1rem;
-      letter-spacing: .04em;
+      margin-top: 22px;
+      padding: 15px;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: .03em;
       border: none;
       border-radius: 14px;
       cursor: pointer;
-      box-shadow: 0 8px 28px rgba(201,168,76,.3);
+      box-shadow: 0 8px 28px rgba(84,120,255,.3);
       transition: all .2s ease;
       position: relative;
       overflow: hidden;
@@ -445,10 +430,11 @@
     }
     .btn-submit:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 14px 36px rgba(201,168,76,.4);
+      box-shadow: 0 14px 36px rgba(84,120,255,.4);
+      background: var(--blue2);
     }
     .btn-submit:active:not(:disabled) { transform: translateY(0); }
-    .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-submit:disabled { opacity: .55; cursor: not-allowed; }
 
     /* ── SUCCESS ── */
     .success-box {
@@ -456,9 +442,8 @@
       flex-direction: column;
       align-items: center;
       gap: 14px;
-      padding: 52px 30px 48px;
+      padding: 52px 28px 48px;
       text-align: center;
-      background: var(--cream);
     }
     .success-icon {
       width: 80px; height: 80px;
@@ -467,19 +452,18 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 2.4rem;
       animation: popIn .5s cubic-bezier(.36,1.7,.6,1) forwards;
-      box-shadow: 0 0 0 12px rgba(61,191,124,.08);
+      box-shadow: 0 0 0 16px rgba(61,191,124,.08);
     }
     @keyframes popIn {
-      0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
-      100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+      0%  { transform: scale(0) rotate(-20deg); opacity:0; }
+      100%{ transform: scale(1) rotate(0);      opacity:1; }
     }
     .success-box h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.7rem;
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.8rem;
       color: var(--navy);
-      margin-top: 4px;
     }
-    .success-box p { color: var(--gray); font-size: .88rem; max-width: 300px; line-height: 1.6; }
+    .success-box p { color: var(--muted); font-size: .88rem; max-width: 280px; line-height: 1.7; }
     .rating-pill {
       display: inline-flex;
       align-items: center;
@@ -487,37 +471,33 @@
       padding: 8px 20px;
       border-radius: 50px;
       font-size: .82rem;
-      font-weight: 600;
+      font-weight: 700;
     }
-    .pill-kurang { background: #ffe5e5; color: #c0392b; }
-    .pill-baik   { background: #fff8e1; color: #b8770a; }
-    .pill-sangat { background: #e9faf2; color: #1e8449; }
+    .pill-kurang { background:#ffe5e5; color:#c0392b; }
+    .pill-baik   { background:#fff8e1; color:#b8770a; }
+    .pill-sangat { background:#e9faf2; color:#1e8449; }
 
     .btn-ulang {
-      margin-top: 12px;
+      margin-top: 8px;
       padding: 12px 32px;
       background: transparent;
-      border: 1.5px solid rgba(10,22,40,.2);
-      color: var(--navy);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      font-size: .9rem;
+      border: 1.5px solid rgba(84,120,255,.2);
+      color: var(--blue);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: .88rem;
       border-radius: 12px;
       cursor: pointer;
       transition: all .2s;
     }
-    .btn-ulang:hover {
-      background: var(--navy);
-      color: var(--gold2);
-      border-color: var(--navy);
-    }
+    .btn-ulang:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
 
     /* ── SPINNER ── */
     .spinner {
       display: inline-block;
-      width: 16px; height: 16px;
-      border: 2.5px solid rgba(10,22,40,.2);
-      border-top-color: var(--navy);
+      width: 15px; height: 15px;
+      border: 2.5px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
       border-radius: 50%;
       animation: spin .7s linear infinite;
       vertical-align: middle;
@@ -529,187 +509,215 @@
     footer {
       position: relative; z-index: 1;
       text-align: center;
-      padding: 20px 20px 36px;
-      color: rgba(255,255,255,.2);
+      padding: 12px 20px 36px;
+      color: var(--muted);
       font-size: .73rem;
-      letter-spacing: .06em;
+      letter-spacing: .04em;
     }
-    footer a { color: rgba(201,168,76,.5); text-decoration: none; }
-    footer a:hover { color: var(--gold2); }
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 400px) {
-      .card-body { padding: 22px 18px 26px; }
-      .emoji-btn { padding: 14px 6px 12px; }
-      .emoji-btn .icon { font-size: 2.1rem; }
-      .soc-btn .soc-label { display: none; }
+    @media (max-width: 680px) {
+      .page-wrap {
+        grid-template-columns: 1fr;
+        margin: 24px auto 32px;
+        gap: 20px;
+      }
+      .left-panel {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .brand-block { flex: 1 1 100%; }
+      .info-card { display: none; }
+      .social-stack { flex: 1 1 100%; }
+      .card-body { padding: 20px 18px 24px; }
     }
   </style>
 </head>
 <body>
 
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
 
-<header>
-  <div class="header-inner">
-    <div class="tagline-chip">Pelayanan Prima</div>
-    <div class="emblem-ring">
-      <!-- Replace with <img src="logo.png"> if you have the logo file -->
-      <img src="logo.png" alt="Logo Lapas Lirung" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-      <svg class="logo-placeholder" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" style="display:none">
-        <circle cx="33" cy="33" r="32" stroke="#c9a84c" stroke-width="1.5" fill="#112240"/>
-        <path d="M33 12 L37 22 H48 L39.5 28.5 L42.5 39 L33 33 L23.5 39 L26.5 28.5 L18 22 H29 Z" fill="#c9a84c" opacity=".9"/>
-        <text x="33" y="52" text-anchor="middle" font-family="serif" font-size="6" fill="#c9a84c" letter-spacing="0.5">LAPAS LIRUNG</text>
-      </svg>
-    </div>
-    <h1>Lembaga Pemasyarakatan<br><em>Kelas III Lirung</em></h1>
-    <p class="sub">Sulawesi Utara · Kemenkumham RI</p>
-    <div class="gold-divider">
-      <span></span><i>✦</i><span></span>
-    </div>
-  </div>
-</header>
+<div class="page-wrap">
 
-<!-- SOCIAL MEDIA BAR -->
-<div class="social-bar">
-  <a class="soc-btn ig" href="https://www.instagram.com/lapas.lirung/" target="_blank" rel="noopener" title="Instagram">
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
-      <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-    </svg>
-    <span class="soc-label">Instagram</span>
-  </a>
-  <a class="soc-btn tt" href="https://www.tiktok.com/@lapas.lirung" target="_blank" rel="noopener" title="TikTok">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>
-    </svg>
-    <span class="soc-label">TikTok</span>
-  </a>
-  <a class="soc-btn fb" href="https://www.facebook.com/lembaga.lirung/" target="_blank" rel="noopener" title="Facebook">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-    </svg>
-    <span class="soc-label">Facebook</span>
-  </a>
-  <a class="soc-btn tw" href="https://x.com/LapasLirung" target="_blank" rel="noopener" title="X / Twitter">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-    </svg>
-    <span class="soc-label">X / Twitter</span>
-  </a>
-  <a class="soc-btn yt" href="https://www.youtube.com/@lapaslirung8779" target="_blank" rel="noopener" title="YouTube">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-    </svg>
-    <span class="soc-label">YouTube</span>
-  </a>
-</div>
-
-<!-- SURVEY CARD -->
-<div class="card">
-  <div class="card-header">
-    <div class="card-header-pattern"></div>
-    <div class="step-indicator">
-      <div class="step-dot active" id="dot1"></div>
-      <div class="step-dot" id="dot2"></div>
-      <div class="step-dot" id="dot3"></div>
-    </div>
-    <h2>Survey Kepuasan Pelayanan</h2>
-    <p>Pendapat Anda sangat berarti bagi kami</p>
-  </div>
-
-  <!-- FORM SECTION -->
-  <div class="card-body" id="formSection">
-
-    <div class="field">
-      <label>
-        <span class="lbl-icon"><svg viewBox="0 0 10 10"><path d="M5 5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm0 1c-2.76 0-5 1.12-5 2.5V9h10v-.5C10 7.12 7.76 6 5 6z"/></svg></span>
-        Nama Lengkap <span class="req">*</span>
-      </label>
-      <div class="input-wrap">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+  <!-- ── LEFT PANEL ── -->
+  <div class="left-panel">
+    <div class="brand-block">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Logo Lapas Lirung"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <svg class="logo-placeholder-svg" style="display:none" width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4 L29 18 H44 L32 26 L36 40 L24 32 L12 40 L16 26 L4 18 H19 Z" fill="rgba(255,255,255,0.9)"/>
         </svg>
-        <input id="nama" type="text" placeholder="Masukkan nama lengkap Anda" autocomplete="name"/>
+      </div>
+      <div>
+        <div class="chip">Kemenkumham RI</div>
+        <h1 style="margin-top:12px">Lapas<br><em>Kelas III Lirung</em></h1>
+        <p class="inst" style="margin-top:8px">Lembaga Pemasyarakatan · Sulawesi Utara<br>Kanwil Kemenkumham Sulut</p>
       </div>
     </div>
 
-    <div class="field">
-      <label>
-        <span class="lbl-icon"><svg viewBox="0 0 10 10"><path d="M5 0a3.5 3.5 0 00-3.5 3.5C1.5 6.12 5 10 5 10s3.5-3.88 3.5-6.5A3.5 3.5 0 005 0zm0 4.75a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/></svg></span>
-        Alamat <span class="req">*</span>
-      </label>
-      <div class="input-wrap">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
-        </svg>
-        <input id="alamat" type="text" placeholder="Kelurahan / Kecamatan / Kabupaten"/>
+    <!-- Info card -->
+    <div class="info-card">
+      <div class="info-card-title">Informasi Instansi</div>
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-text">Kab. Kepulauan Talaud</div>
+          <div class="info-sub">Sulawesi Utara</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🏛️</div>
+        <div>
+          <div class="info-text">Lembaga Pemasyarakatan</div>
+          <div class="info-sub">Kelas III – Unit Pelaksana Teknis</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">⚖️</div>
+        <div>
+          <div class="info-text">Kemenkumham RI</div>
+          <div class="info-sub">Kanwil Sulawesi Utara</div>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label>
-        <span class="lbl-icon"><svg viewBox="0 0 10 10"><path d="M8.5 6.5l-1.8-.2-.9.9C4.7 6.7 3.3 5.3 2.8 3.7l.9-.9L3.5 1H1C.9 5.4 4.6 9.1 8.5 9l.5-2.5-.5.5z"/></svg></span>
-        No. HP / WhatsApp <span class="req">*</span>
-      </label>
-      <div class="input-wrap">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-        </svg>
-        <input id="nohp" type="tel" placeholder="08xxxxxxxxxx" inputmode="numeric"/>
+    <!-- Social -->
+    <div class="social-stack">
+      <div class="social-stack-label">Ikuti kami</div>
+      <div class="soc-row">
+        <a class="soc-btn ig" href="https://www.instagram.com/lapas.lirung/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="4.5"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          Instagram
+        </a>
+        <a class="soc-btn tt" href="https://www.tiktok.com/@lapas.lirung" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>
+          </svg>
+          TikTok
+        </a>
+        <a class="soc-btn fb" href="https://www.facebook.com/lembaga.lirung/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          Facebook
+        </a>
+        <a class="soc-btn tw" href="https://x.com/LapasLirung" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          X / Twitter
+        </a>
+        <a class="soc-btn yt" href="https://www.youtube.com/@lapaslirung8779" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+          YouTube
+        </a>
       </div>
     </div>
-
-    <!-- RATING -->
-    <div class="field">
-      <div class="rating-label">
-        <span class="lbl-icon" style="width:18px;height:18px;background:var(--navy);border-radius:5px;display:inline-flex;align-items:center;justify-content:center;">
-          <svg style="width:10px;height:10px;fill:var(--gold2)" viewBox="0 0 10 10"><path d="M5 0l1.2 3.7H10L6.9 5.9l1.2 3.7L5 7.4 1.9 9.6l1.2-3.7L0 3.7h3.8z"/></svg>
-        </span>
-        Penilaian Kepuasan <span class="req">*</span>
-      </div>
-      <div class="emoji-row">
-        <button class="emoji-btn" id="btn-kurang" onclick="pilihRating('Kurang','kurang','btn-kurang')">
-          <span class="icon">😞</span>
-          <span class="caption">Kurang</span>
-          <span class="caption-sub">Perlu perbaikan</span>
-        </button>
-        <button class="emoji-btn" id="btn-baik" onclick="pilihRating('Baik','baik','btn-baik')">
-          <span class="icon">😊</span>
-          <span class="caption">Baik</span>
-          <span class="caption-sub">Cukup memuaskan</span>
-        </button>
-        <button class="emoji-btn" id="btn-sangat" onclick="pilihRating('Sangat Baik','sangat','btn-sangat')">
-          <span class="icon">😄</span>
-          <span class="caption">Sangat Baik</span>
-          <span class="caption-sub">Sangat memuaskan</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="err-msg" id="errMsg">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Mohon lengkapi semua isian dan pilih penilaian.
-    </div>
-
-    <button class="btn-submit" id="btnSubmit" onclick="kirimData()">
-      Kirim Survey
-    </button>
-
   </div>
 
-  <!-- SUCCESS SECTION -->
-  <div class="success-box" id="successSection">
-    <div class="success-icon">✅</div>
-    <h3>Terima Kasih!</h3>
-    <p>Survey Anda telah berhasil dikirim. Kami menghargai setiap masukan untuk meningkatkan kualitas layanan.</p>
-    <span class="rating-pill" id="ratingBadge"></span>
-    <button class="btn-ulang" onclick="resetForm()">↩ Isi Survey Lagi</button>
+  <!-- ── RIGHT PANEL (CARD) ── -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-dots"></div>
+      <div class="card-header-dots2"></div>
+      <div class="step-row">
+        <div class="step-dot active" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+      </div>
+      <h2>Survey Kepuasan Pelayanan</h2>
+      <p>Pendapat Anda sangat berarti bagi kami</p>
+    </div>
+
+    <!-- FORM -->
+    <div class="card-body" id="formSection">
+
+      <div class="field">
+        <label>Nama Lengkap <span class="req">*</span></label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          <input id="nama" type="text" placeholder="Masukkan nama lengkap Anda" autocomplete="name"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Alamat <span class="req">*</span></label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          <input id="alamat" type="text" placeholder="Kelurahan / Kecamatan / Kabupaten"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>No. HP / WhatsApp <span class="req">*</span></label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          <input id="nohp" type="tel" placeholder="08xxxxxxxxxx" inputmode="numeric"/>
+        </div>
+      </div>
+
+      <!-- RATING -->
+      <div class="field">
+        <div class="rating-label">Penilaian Kepuasan <span class="req" style="color:var(--red)">*</span></div>
+        <div class="emoji-row">
+          <button class="emoji-btn" id="btn-kurang" onclick="pilihRating('Kurang','sel-kurang','btn-kurang')">
+            <span class="icon">😞</span>
+            <span class="caption">Kurang</span>
+            <span class="caption-sub">Perlu perbaikan</span>
+          </button>
+          <button class="emoji-btn" id="btn-baik" onclick="pilihRating('Baik','sel-baik','btn-baik')">
+            <span class="icon">😊</span>
+            <span class="caption">Baik</span>
+            <span class="caption-sub">Cukup memuaskan</span>
+          </button>
+          <button class="emoji-btn" id="btn-sangat" onclick="pilihRating('Sangat Baik','sel-sangat','btn-sangat')">
+            <span class="icon">😄</span>
+            <span class="caption">Sangat Baik</span>
+            <span class="caption-sub">Sangat memuaskan</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="err-msg" id="errMsg">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Mohon lengkapi semua isian dan pilih penilaian.
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="kirimData()">
+        Kirim Survey →
+      </button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-box" id="successSection">
+      <div class="success-icon">✅</div>
+      <h3>Terima Kasih!</h3>
+      <p>Survey Anda telah berhasil dikirim. Kami menghargai setiap masukan untuk meningkatkan kualitas layanan.</p>
+      <span class="rating-pill" id="ratingBadge"></span>
+      <button class="btn-ulang" onclick="resetForm()">↩ Isi Survey Lagi</button>
+    </div>
   </div>
-</div>
+
+</div><!-- /page-wrap -->
 
 <footer>
   © 2025 Lapas Kelas III Lirung &nbsp;·&nbsp;
@@ -722,15 +730,15 @@
   let ratingTerpilih = "";
   const dots = [document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
 
-  // Animate step dots as user fills fields
-  ['nama','alamat','nohp'].forEach((id, i) => {
-    document.getElementById(id).addEventListener('input', () => {
-      const filled = ['nama','alamat','nohp'].filter(f => document.getElementById(f).value.trim()).length;
-      dots.forEach((d, j) => {
-        d.classList.toggle('active', j < filled || (j === filled && ratingTerpilih));
-      });
-    });
+  ['nama','alamat','nohp'].forEach((id) => {
+    document.getElementById(id).addEventListener('input', updateDots);
   });
+
+  function updateDots() {
+    const filled = ['nama','alamat','nohp'].filter(f => document.getElementById(f).value.trim()).length;
+    dots.forEach((d, j) => d.classList.toggle('active', j < filled));
+    if (ratingTerpilih) dots[2].classList.add('active');
+  }
 
   function pilihRating(nilai, cls, btnId) {
     ratingTerpilih = nilai;
@@ -749,7 +757,7 @@
 
     if (!nama || !alamat || !nohp || !ratingTerpilih) {
       err.style.display = "flex";
-      err.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'translateY(0)'}], {duration:300,easing:'ease'});
+      err.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'translateY(0)'}],{duration:300,easing:'ease'});
       return;
     }
     err.style.display = "none";
@@ -758,19 +766,17 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Mengirim...';
 
-    const payload = { nama, alamat, nohp, rating: ratingTerpilih };
-
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ nama, alamat, nohp, rating: ratingTerpilih })
       });
       tampilkanSukses(ratingTerpilih);
     } catch (e) {
       btn.disabled = false;
-      btn.innerHTML = "Kirim Survey";
+      btn.innerHTML = "Kirim Survey →";
       err.textContent = "⚠️ Gagal mengirim data. Periksa koneksi internet Anda.";
       err.style.display = "flex";
     }
@@ -795,10 +801,10 @@
     ["nama","alamat","nohp"].forEach(id => document.getElementById(id).value = "");
     ratingTerpilih = "";
     ["btn-kurang","btn-baik","btn-sangat"].forEach(id => document.getElementById(id).className = "emoji-btn");
-    dots.forEach((d, i) => d.classList.toggle('active', i === 0));
+    dots.forEach((d,i) => d.classList.toggle('active', i === 0));
     const btn = document.getElementById("btnSubmit");
     btn.disabled = false;
-    btn.innerHTML = "Kirim Survey";
+    btn.innerHTML = "Kirim Survey →";
     document.getElementById("errMsg").style.display = "none";
     document.getElementById("successSection").style.display = "none";
     document.getElementById("formSection").style.display = "block";
