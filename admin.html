@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Lapas Kelas III Lirung</title>
+<style>
+  :root {
+    --primary: #1a3a6e;
+    --primary-light: #2453a0;
+    --accent: #c8a84b;
+    --accent-light: #f0d070;
+    --bg: #f0f4fa;
+    --white: #ffffff;
+    --text: #1e2a3a;
+    --muted: #556070;
+    --border: #d8dde6;
+    --red: #d93025;
+    --green: #1e7e34;
+    --yellow: #b59000;
+    --shadow: 0 2px 12px rgba(26,58,110,0.10);
+    --sidebar-w: 240px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; display: flex; min-height: 100vh; }
+
+  /* LOGIN */
+  #login-screen {
+    position: fixed; inset: 0; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;
+  }
+  .login-box {
+    background: white; border-radius: 16px; padding: 40px 36px; width: 360px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25); text-align: center;
+  }
+  .login-box .logo { font-size: 40px; margin-bottom: 12px; }
+  .login-box h2 { color: var(--primary); font-size: 18px; margin-bottom: 4px; }
+  .login-box p { color: var(--muted); font-size: 12px; margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 14px; margin-bottom: 12px; font-family: inherit;
+  }
+  .login-box input:focus { outline: none; border-color: var(--primary-light); }
+  .login-box button {
+    width: 100%; background: var(--primary); color: white; border: none;
+    border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .login-box button:hover { background: var(--primary-light); }
+  .login-error { color: var(--red); font-size: 12px; margin-top: 8px; display: none; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w); background: var(--primary); color: white;
+    display: flex; flex-direction: column; min-height: 100vh; flex-shrink: 0;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .sidebar-brand .icon { font-size: 28px; margin-bottom: 6px; }
+  .sidebar-brand h3 { font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--accent-light); }
+  .sidebar-brand p { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 3px; }
+  .sidebar-nav { flex: 1; padding: 12px 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 20px; cursor: pointer; font-size: 13px;
+    color: rgba(255,255,255,0.75); transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-item.active { background: rgba(255,255,255,0.12); color: var(--accent-light); border-left-color: var(--accent); font-weight: 600; }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.12); }
+  .sidebar-footer button {
+    width: 100%; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 9px;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  .sidebar-footer button:hover { background: rgba(255,255,255,0.18); }
+
+  /* MAIN */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 14px 28px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px; flex-shrink: 0;
+  }
+  .topbar h1 { font-size: 18px; font-weight: 700; color: var(--primary); }
+  .topbar-meta { font-size: 12px; color: var(--muted); }
+  .content { flex: 1; padding: 28px; overflow-y: auto; }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: white; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+  .card-head {
+    background: var(--primary); color: var(--accent-light);
+    padding: 14px 20px; font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-body { padding: 20px; }
+
+  /* FORM FIELDS */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--text);
+    background: var(--bg); transition: border 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none; border-color: var(--primary-light); background: white;
+  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  /* BUTTONS */
+  .btn {
+    padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit; border: none; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-accent { background: var(--accent); color: #2a1e00; }
+  .btn-accent:hover { background: var(--accent-light); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-danger:hover { background: #b02520; }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-outline:hover { background: var(--bg); }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-box { background: white; border-radius: 10px; padding: 18px; box-shadow: var(--shadow); border-left: 4px solid var(--accent); }
+  .stat-box .num { font-size: 30px; font-weight: 700; color: var(--primary); }
+  .stat-box .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* TABLE */
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--bg); color: var(--muted); font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:hover td { background: #f7f9fc; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block; border-radius: 20px; padding: 3px 10px;
+    font-size: 11px; font-weight: 700;
+  }
+  .badge-green { background: #d4edda; color: #155724; }
+  .badge-yellow { background: #fff3cd; color: #856404; }
+  .badge-red { background: #f8d7da; color: #721c24; }
+
+  /* RATING BAR */
+  .r-bar-wrap { height: 10px; background: var(--bg); border-radius: 6px; overflow: hidden; min-width: 80px; }
+  .r-bar { height: 100%; border-radius: 6px; }
+  .r-red { background: var(--red); }
+  .r-yellow { background: #c7a100; }
+  .r-green { background: var(--green); }
+
+  /* BERITA LIST */
+  .berita-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .berita-item:last-child { border-bottom: none; }
+  .berita-icon { font-size: 28px; flex-shrink: 0; }
+  .berita-meta { flex: 1; }
+  .berita-meta strong { font-size: 14px; color: var(--text); display: block; margin-bottom: 3px; }
+  .berita-meta small { color: var(--muted); font-size: 12px; }
+  .berita-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; background: var(--primary);
+    color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px;
+    font-weight: 600; z-index: 9998; transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  /* API CONFIG */
+  .api-notice {
+    background: #fff8e1; border: 1.5px solid #ffe082; border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 20px; font-size: 13px; line-height: 1.6;
+  }
+  .api-notice strong { color: #7a5400; }
+  .api-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+  .api-status.connected { background: #d4edda; color: #155724; }
+  .api-status.disconnected { background: #f8d7da; color: #721c24; }
+
+  .step-box { background: var(--bg); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--primary); }
+  .step-box .step-num { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .step-box code { background: #e8edf5; padding: 2px 7px; border-radius: 4px; font-size: 12.5px; color: var(--primary); font-family: 'Courier New', monospace; word-break: break-all; }
+
+  .section-sep { border: none; border-top: 1.5px solid var(--border); margin: 24px 0; }
+
+  /* MODAL */
+  .modal-bg {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 999;
+    align-items: center; justify-content: center;
+  }
+  .modal-bg.open { display: flex; }
+  .modal { background: white; border-radius: 16px; padding: 28px; width: 500px; max-width: 94vw; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { font-size: 16px; color: var(--primary); margin-bottom: 18px; }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">⚖️</div>
+    <h2>Admin Panel</h2>
+    <p>Lapas Kelas III Lirung</p>
+    <input type="text" id="usr" placeholder="Username" />
+    <input type="password" id="pwd" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button onclick="doLogin()">Masuk</button>
+    <p class="login-error" id="login-err">Username atau password salah.</p>
+    <p style="font-size:11px;color:#aaa;margin-top:14px;">Default: admin / lapas2025</p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="icon">⚖️</div>
+    <h3>Lapas Kelas III Lirung</h3>
+    <p>Admin Panel</p>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-item active" onclick="showPanel('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="showPanel('konten')"><span class="nav-icon">✏️</span> Edit Konten</div>
+    <div class="nav-item" onclick="showPanel('berita')"><span class="nav-icon">📰</span> Berita & Kegiatan</div>
+    <div class="nav-item" onclick="showPanel('layanan')"><span class="nav-icon">🛎️</span> Layanan</div>
+    <div class="nav-item" onclick="showPanel('survei')"><span class="nav-icon">⭐</span> Data Survei</div>
+    <div class="nav-item" onclick="showPanel('integrasi')"><span class="nav-icon">🔗</span> Integrasi Spreadsheet</div>
+  </div>
+  <div class="sidebar-footer">
+    <button onclick="doLogout()">🚪 Keluar</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="page-title">Dashboard</h1>
+    <span class="topbar-meta" id="api-indicator">
+      <span class="api-status disconnected" id="api-status-badge">⚠ Spreadsheet belum terhubung</span>
+    </span>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="num" id="dash-total">0</div>
+          <div class="lbl">Total Penilaian</div>
+        </div>
+        <div class="stat-box" style="border-left-color:#1e7e34">
+          <div class="num" id="dash-sb">0</div>
+          <div class="lbl">Sangat Baik</div>
+        </div>
+        <div class="stat-box" style="border-left-color:#c7a100">
+          <div class="num" id="dash-baik">0</div>
+          <div class="lbl">Baik</div>
+        </div>
+        <div class="stat-box" style="border-left-color:#d93025">
+          <div class="num" id="dash-kurang">0</div>
+          <div class="lbl">Kurang</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">📈 Ringkasan Penilaian per Layanan</div>
+        <div class="card-body">
+          <div id="dash-chart-area">
+            <p style="color:var(--muted);font-size:13px;text-align:center;padding:30px 0;">Hubungkan Google Spreadsheet untuk melihat data survei di sini.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">📋 Penilaian Terbaru (10 Terakhir)</div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Layanan</th>
+                  <th>Penilaian</th>
+                  <th>Saran</th>
+                </tr>
+              </thead>
+              <tbody id="dash-recent-body">
+                <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">Belum ada data. Hubungkan spreadsheet terlebih dahulu.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT KONTEN -->
+    <div class="panel" id="panel-konten">
+      <div class="card">
+        <div class="card-head">🏢 Informasi Lembaga</div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nama Instansi</label>
+              <input type="text" id="k-nama" value="Lapas Kelas III Lirung">
+            </div>
+            <div class="form-group">
+              <label>Klasifikasi</label>
+              <input type="text" id="k-kelas" value="Kelas III">
+            </div>
+            <div class="form-group">
+              <label>Wilayah Kerja</label>
+              <input type="text" id="k-wilayah" value="Kab. Kepulauan Talaud">
+            </div>
+            <div class="form-group">
+              <label>Kanwil</label>
+              <input type="text" id="k-kanwil" value="Sulawesi Utara">
+            </div>
+            <div class="form-group">
+              <label>Kapasitas Hunian</label>
+              <input type="text" id="k-kapasitas" value="±100 WBP">
+            </div>
+            <div class="form-group">
+              <label>Jumlah WBP Saat Ini</label>
+              <input type="number" id="k-wbp" value="87">
+            </div>
+            <div class="form-group">
+              <label>Petugas Aktif</label>
+              <input type="number" id="k-petugas" value="28">
+            </div>
+            <div class="form-group">
+              <label>Program Pembinaan</label>
+              <input type="number" id="k-program" value="6">
+            </div>
+          </div>
+          <hr class="section-sep">
+          <div class="form-group">
+            <label>Visi</label>
+            <textarea id="k-visi">Terwujudnya Pemasyarakatan yang profesional, akuntabel, dan transparan dalam menjamin perlindungan hak narapidana menuju manusia yang mandiri.</textarea>
+          </div>
+          <div class="form-group">
+            <label>Kontak — Telepon</label>
+            <input type="text" id="k-telp" value="(0432) 21XXX">
+          </div>
+          <div class="form-group">
+            <label>Kontak — Email</label>
+            <input type="text" id="k-email" value="lapas.lirung@kemenkumham.go.id">
+          </div>
+          <div class="form-group">
+            <label>Alamat Lengkap</label>
+            <textarea id="k-alamat" style="min-height:60px">Jl. Utama No. 1, Lirung, Kec. Lirung, Kab. Kepulauan Talaud, Sulawesi Utara</textarea>
+          </div>
+          <div class="form-group">
+            <label>Jam Kunjungan</label>
+            <input type="text" id="k-kunjungan" value="Selasa, Kamis, Sabtu: 09.00 – 11.00 WITA">
+          </div>
+          <button class="btn btn-primary" onclick="saveKonten()">💾 Simpan Perubahan Konten</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BERITA -->
+    <div class="panel" id="panel-berita">
+      <div class="card">
+        <div class="card-head">
+          <span>📰 Daftar Berita & Kegiatan</span>
+          <button class="btn btn-accent btn-sm" onclick="openModal('modal-berita')">+ Tambah Berita</button>
+        </div>
+        <div class="card-body" id="berita-list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYANAN -->
+    <div class="panel" id="panel-layanan">
+      <div class="card">
+        <div class="card-head">
+          <span>🛎️ Daftar Layanan</span>
+          <button class="btn btn-accent btn-sm" onclick="openModal('modal-layanan')">+ Tambah Layanan</button>
+        </div>
+        <div class="card-body" id="layanan-list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SURVEI -->
+    <div class="panel" id="panel-survei">
+      <div class="card">
+        <div class="card-head">
+          <span>⭐ Data Penilaian Survei</span>
+          <button class="btn btn-outline btn-sm" onclick="loadSurvei()">🔄 Refresh Data</button>
+        </div>
+        <div class="card-body">
+          <div id="survei-stats" class="stats-row" style="margin-bottom:16px"></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Timestamp</th>
+                  <th>Layanan</th>
+                  <th>Penilaian</th>
+                  <th>Saran / Masukan</th>
+                </tr>
+              </thead>
+              <tbody id="survei-body">
+                <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Menunggu koneksi spreadsheet...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTEGRASI -->
+    <div class="panel" id="panel-integrasi">
+      <div class="api-notice">
+        <strong>⚠️ Cara menghubungkan Google Spreadsheet sebagai database survei:</strong>
+      </div>
+
+      <div class="card">
+        <div class="card-head">🔧 Langkah-langkah Setup</div>
+        <div class="card-body">
+
+          <div class="step-box">
+            <div class="step-num">Langkah 1 — Buat Google Spreadsheet</div>
+            Buka <strong>sheets.google.com</strong> → buat spreadsheet baru → beri nama <code>Survei Lapas Lirung</code>.
+            Buat dua sheet: <code>Penilaian</code> dan <code>Konten</code>.<br><br>
+            Di sheet <strong>Penilaian</strong>, buat header di baris 1:<br>
+            <code>Timestamp | Layanan | Penilaian | Saran</code>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">Langkah 2 — Buat Apps Script</div>
+            Di spreadsheet → menu <strong>Ekstensi → Apps Script</strong> → hapus kode lama → paste kode berikut:
+            <div id="apps-script-code" style="background:#f0f4fa;border-radius:8px;padding:14px;margin-top:10px;font-size:12px;font-family:'Courier New',monospace;white-space:pre-wrap;border:1px solid var(--border);max-height:260px;overflow-y:auto;">const SS_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const sheet = SpreadsheetApp.openById(SS_ID).getSheetByName("Penilaian");
+  sheet.appendRow([
+    new Date().toLocaleString("id-ID"),
+    data.layanan,
+    data.penilaian,
+    data.saran || ""
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({status:"ok"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  const action = e.parameter.action;
+  const ss = SpreadsheetApp.openById(SS_ID);
+  
+  if (action === "getSurvei") {
+    const sheet = ss.getSheetByName("Penilaian");
+    const rows = sheet.getDataRange().getValues();
+    const data = rows.slice(1).map(r => ({
+      timestamp: r[0], layanan: r[1], penilaian: r[2], saran: r[3]
+    }));
+    return ContentService.createTextOutput(JSON.stringify(data))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  if (action === "getKonten") {
+    const sheet = ss.getSheetByName("Konten");
+    const rows = sheet.getDataRange().getValues();
+    const obj = {};
+    rows.forEach(r => { if(r[0]) obj[r[0]] = r[1]; });
+    return ContentService.createTextOutput(JSON.stringify(obj))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  if (action === "saveKonten") {
+    const sheet = ss.getSheetByName("Konten");
+    const konten = JSON.parse(e.parameter.data);
+    sheet.clearContents();
+    Object.entries(konten).forEach(([k,v]) => sheet.appendRow([k, v]));
+    return ContentService.createTextOutput(JSON.stringify({status:"ok"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  return ContentService.createTextOutput("ok");
+}</div>
+            <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="copyScript()">📋 Salin Kode</button>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">Langkah 3 — Deploy sebagai Web App</div>
+            Klik <strong>Deploy → New Deployment</strong> → pilih tipe <strong>Web app</strong> → set:<br>
+            • Execute as: <em>Me</em><br>
+            • Who has access: <em>Anyone</em><br>
+            Klik <strong>Deploy</strong> → izinkan akses → salin URL Web App.
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">Langkah 4 — Masukkan URL ke sini</div>
+            <div class="form-group" style="margin-top:10px;margin-bottom:0">
+              <label>URL Apps Script Web App</label>
+              <input type="text" id="sheet-url" placeholder="https://script.google.com/macros/s/AKfy.../exec"
+                value="">
+            </div>
+            <button class="btn btn-primary" style="margin-top:10px" onclick="saveSheetURL()">🔗 Hubungkan & Test</button>
+            <span id="connect-status" style="margin-left:12px;font-size:12px;color:var(--muted)"></span>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">Langkah 5 — Update index.html</div>
+            Setelah URL tersimpan, klik tombol di bawah untuk mengunduh <code>index.html</code> yang sudah terhubung ke spreadsheet Anda.
+            <br><br>
+            <button class="btn btn-accent" onclick="generateIndex()">⬇️ Download index.html (sudah terintegrasi)</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- MODAL BERITA -->
+<div class="modal-bg" id="modal-berita">
+  <div class="modal">
+    <h3>📰 Tambah / Edit Berita</h3>
+    <input type="hidden" id="b-idx" value="-1">
+    <div class="form-group"><label>Judul Berita</label><input type="text" id="b-judul" placeholder="Judul berita..."></div>
+    <div class="form-group"><label>Kategori / Tag</label>
+      <select id="b-tag">
+        <option>Pembinaan</option><option>Kerohanian</option><option>Prestasi</option>
+        <option>Kegiatan</option><option>Informasi</option><option>Pengumuman</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Isi Singkat</label><textarea id="b-isi" placeholder="Ringkasan berita..."></textarea></div>
+    <div class="form-group"><label>Tanggal Publikasi</label><input type="date" id="b-tanggal"></div>
+    <div class="form-group"><label>Ikon (emoji)</label><input type="text" id="b-icon" value="📢" maxlength="4" style="width:80px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-berita')">Batal</button>
+      <button class="btn btn-primary" onclick="saveBerita()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LAYANAN -->
+<div class="modal-bg" id="modal-layanan">
+  <div class="modal">
+    <h3>🛎️ Tambah / Edit Layanan</h3>
+    <input type="hidden" id="l-idx" value="-1">
+    <div class="form-group"><label>Nama Layanan</label><input type="text" id="l-nama" placeholder="Nama layanan..."></div>
+    <div class="form-group"><label>Deskripsi Layanan</label><textarea id="l-desc" placeholder="Deskripsi singkat..."></textarea></div>
+    <div class="form-group"><label>Ikon (emoji)</label><input type="text" id="l-icon" value="📋" maxlength="4" style="width:80px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-layanan')">Batal</button>
+      <button class="btn btn-primary" onclick="saveLayanan()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== AUTH =====
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'lapas2025';
+
+function doLogin() {
+  const u = document.getElementById('usr').value.trim();
+  const p = document.getElementById('pwd').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('login-screen').style.display = 'none';
+    initAdmin();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('usr').value = '';
+  document.getElementById('pwd').value = '';
+}
+
+// ===== STATE =====
+let sheetURL = localStorage.getItem('lapas_sheet_url') || '';
+let surveiData = [];
+
+let beritaList = JSON.parse(localStorage.getItem('lapas_berita') || 'null') || [
+  { judul: 'Kegiatan Pembinaan Kemandirian Melalui Pelatihan Menjahit', tag: 'Pembinaan', isi: 'Warga binaan mengikuti pelatihan keterampilan menjahit sebagai bekal saat kembali ke masyarakat.', tanggal: '2025-01-06', icon: '🏋️' },
+  { judul: 'Pengajian Rutin Bulanan Warga Binaan Lapas Lirung', tag: 'Kerohanian', isi: 'Kegiatan pengajian rutin dilaksanakan sebagai pembinaan mental spiritual bagi warga binaan.', tanggal: '2025-01-03', icon: '🙏' },
+  { judul: 'Lapas Lirung Raih Predikat WBK dari Kemenkumham', tag: 'Prestasi', isi: 'Lapas Kelas III Lirung berhasil meraih predikat Wilayah Bebas dari Korupsi (WBK).', tanggal: '2024-12-18', icon: '🏆' }
+];
+
+let layananList = JSON.parse(localStorage.getItem('lapas_layanan') || 'null') || [
+  { nama: 'Kunjungan Keluarga', desc: 'Layanan kunjungan bagi keluarga warga binaan sesuai jadwal yang ditentukan', icon: '👨‍👩‍👦' },
+  { nama: 'Surat Menyurat', desc: 'Pengurusan surat-surat resmi termasuk surat keterangan dan permohonan', icon: '📜' },
+  { nama: 'Penerimaan Paket', desc: 'Layanan penerimaan barang titipan dari keluarga untuk warga binaan', icon: '📦' },
+  { nama: 'Pembebasan Bersyarat', desc: 'Pengurusan PB, CMB, dan CMK bagi warga binaan yang memenuhi syarat', icon: '🏃' },
+  { nama: 'Program Pembinaan', desc: 'Kegiatan kemandirian, kerohanian, dan sosial bagi warga binaan', icon: '📚' },
+  { nama: 'Kesehatan', desc: 'Layanan kesehatan dasar bagi seluruh warga binaan pemasyarakatan', icon: '⚕️' }
+];
+
+// ===== INIT =====
+function initAdmin() {
+  if (sheetURL) {
+    document.getElementById('sheet-url').value = sheetURL;
+    updateApiStatus(true);
+    loadSurvei();
+  }
+  renderBeritaList();
+  renderLayananList();
+  renderDashboardStats();
+}
+
+// ===== PANELS =====
+const panelTitles = {
+  dashboard: 'Dashboard',
+  konten: 'Edit Konten',
+  berita: 'Berita & Kegiatan',
+  layanan: 'Layanan',
+  survei: 'Data Survei',
+  integrasi: 'Integrasi Spreadsheet'
+};
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick').includes("'" + name + "'")) n.classList.add('active');
+  });
+  document.getElementById('page-title').textContent = panelTitles[name] || name;
+  if (name === 'survei') loadSurvei();
+}
+
+// ===== TOAST =====
+function toast(msg, dur = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ===== MODAL =====
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ===== API STATUS =====
+function updateApiStatus(ok) {
+  const el = document.getElementById('api-status-badge');
+  if (ok) {
+    el.className = 'api-status connected';
+    el.textContent = '✓ Spreadsheet terhubung';
+  } else {
+    el.className = 'api-status disconnected';
+    el.textContent = '⚠ Spreadsheet belum terhubung';
+  }
+}
+
+// ===== SHEET =====
+function saveSheetURL() {
+  const url = document.getElementById('sheet-url').value.trim();
+  if (!url) { toast('Masukkan URL Apps Script terlebih dahulu.'); return; }
+  const st = document.getElementById('connect-status');
+  st.textContent = 'Menguji koneksi...';
+  fetch(url + '?action=getSurvei')
+    .then(r => r.json())
+    .then(d => {
+      localStorage.setItem('lapas_sheet_url', url);
+      sheetURL = url;
+      updateApiStatus(true);
+      st.textContent = '✓ Berhasil terhubung! ' + d.length + ' data ditemukan.';
+      st.style.color = 'green';
+      toast('✅ Spreadsheet berhasil dihubungkan!');
+      loadSurvei();
+    })
+    .catch(() => {
+      st.textContent = '✗ Koneksi gagal. Periksa URL dan pastikan deployment sudah benar.';
+      st.style.color = 'red';
+      updateApiStatus(false);
+    });
+}
+
+// ===== LOAD SURVEI =====
+function loadSurvei() {
+  if (!sheetURL) return;
+  fetch(sheetURL + '?action=getSurvei')
+    .then(r => r.json())
+    .then(data => {
+      surveiData = data;
+      renderSurvei();
+      renderDashboardStats();
+    })
+    .catch(() => toast('Gagal memuat data survei.'));
+}
+
+function renderSurvei() {
+  const tbody = document.getElementById('survei-body');
+  if (!surveiData.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Belum ada data penilaian.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...surveiData].reverse().slice(0, 100).map((r, i) => `
+    <tr>
+      <td>${surveiData.length - i}</td>
+      <td style="font-size:12px;color:var(--muted)">${r.timestamp || '-'}</td>
+      <td>${r.layanan || '-'}</td>
+      <td>${badgeRating(r.penilaian)}</td>
+      <td style="font-size:12px;max-width:220px">${r.saran || '<span style="color:var(--muted)">—</span>'}</td>
+    </tr>`).join('');
+
+  // stats
+  const total = surveiData.length;
+  const sb = surveiData.filter(r => r.penilaian && r.penilaian.toLowerCase().includes('sangat')).length;
+  const baik = surveiData.filter(r => r.penilaian && r.penilaian.toLowerCase() === 'baik').length;
+  const kurang = surveiData.filter(r => r.penilaian && r.penilaian.toLowerCase() === 'kurang').length;
+  document.getElementById('survei-stats').innerHTML = `
+    <div class="stat-box"><div class="num">${total}</div><div class="lbl">Total</div></div>
+    <div class="stat-box" style="border-left-color:#1e7e34"><div class="num">${sb}</div><div class="lbl">Sangat Baik</div></div>
+    <div class="stat-box" style="border-left-color:#c7a100"><div class="num">${baik}</div><div class="lbl">Baik</div></div>
+    <div class="stat-box" style="border-left-color:#d93025"><div class="num">${kurang}</div><div class="lbl">Kurang</div></div>`;
+}
+
+function badgeRating(val) {
+  if (!val) return '-';
+  const v = val.toLowerCase();
+  if (v.includes('sangat')) return '<span class="badge badge-green">😄 Sangat Baik</span>';
+  if (v === 'baik') return '<span class="badge badge-yellow">🙂 Baik</span>';
+  if (v === 'kurang') return '<span class="badge badge-red">😞 Kurang</span>';
+  return val;
+}
+
+function renderDashboardStats() {
+  const total = surveiData.length;
+  const sb = surveiData.filter(r => r.penilaian && r.penilaian.toLowerCase().includes('sangat')).length;
+  const baik = surveiData.filter(r => r.penilaian && r.penilaian.toLowerCase() === 'baik').length;
+  const kurang = surveiData.filter(r => r.penilaian && r.penilaian.toLowerCase() === 'kurang').length;
+  document.getElementById('dash-total').textContent = total;
+  document.getElementById('dash-sb').textContent = sb;
+  document.getElementById('dash-baik').textContent = baik;
+  document.getElementById('dash-kurang').textContent = kurang;
+
+  // recent
+  const recent = [...surveiData].reverse().slice(0, 10);
+  const tbody = document.getElementById('dash-recent-body');
+  if (!recent.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">Belum ada data.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(r => `
+    <tr>
+      <td style="font-size:12px;color:var(--muted)">${r.timestamp || '-'}</td>
+      <td>${r.layanan || '-'}</td>
+      <td>${badgeRating(r.penilaian)}</td>
+      <td style="font-size:12px;max-width:200px">${r.saran || '<span style="color:var(--muted)">—</span>'}</td>
+    </tr>`).join('');
+
+  // chart per layanan
+  const byLayanan = {};
+  surveiData.forEach(r => {
+    if (!r.layanan) return;
+    if (!byLayanan[r.layanan]) byLayanan[r.layanan] = { sb: 0, baik: 0, kurang: 0 };
+    const v = (r.penilaian || '').toLowerCase();
+    if (v.includes('sangat')) byLayanan[r.layanan].sb++;
+    else if (v === 'baik') byLayanan[r.layanan].baik++;
+    else if (v === 'kurang') byLayanan[r.layanan].kurang++;
+  });
+  const chartHTML = Object.entries(byLayanan).map(([lname, counts]) => {
+    const tot = counts.sb + counts.baik + counts.kurang || 1;
+    return `<div style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">${lname} <span style="font-weight:400;color:var(--muted)">(${tot})</span></div>
+      <div style="display:flex;gap:3px;height:14px;border-radius:7px;overflow:hidden">
+        <div style="width:${Math.round(counts.sb/tot*100)}%;background:#1e7e34;min-width:${counts.sb?3:0}px" title="Sangat Baik: ${counts.sb}"></div>
+        <div style="width:${Math.round(counts.baik/tot*100)}%;background:#c7a100;min-width:${counts.baik?3:0}px" title="Baik: ${counts.baik}"></div>
+        <div style="width:${Math.round(counts.kurang/tot*100)}%;background:#d93025;min-width:${counts.kurang?3:0}px" title="Kurang: ${counts.kurang}"></div>
+      </div>
+      <div style="display:flex;gap:14px;font-size:11px;color:var(--muted);margin-top:4px">
+        <span style="color:#1e7e34">■ SB: ${counts.sb}</span>
+        <span style="color:#b59000">■ Baik: ${counts.baik}</span>
+        <span style="color:#d93025">■ Kurang: ${counts.kurang}</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('dash-chart-area').innerHTML = chartHTML ||
+    '<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Belum ada data survei.</p>';
+}
+
+// ===== EXPORT CSV =====
+function exportCSV() {
+  if (!surveiData.length) { toast('Tidak ada data untuk diexport.'); return; }
+  const header = 'No,Timestamp,Layanan,Penilaian,Saran\n';
+  const rows = surveiData.map((r, i) => `${i+1},"${r.timestamp}","${r.layanan}","${r.penilaian}","${(r.saran||'').replace(/"/g,'""')}"`).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'survei_lapas_lirung_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  toast('✅ File CSV diunduh!');
+}
+
+// ===== KONTEN =====
+function saveKonten() {
+  const konten = {
+    nama: document.getElementById('k-nama').value,
+    kelas: document.getElementById('k-kelas').value,
+    wilayah: document.getElementById('k-wilayah').value,
+    kanwil: document.getElementById('k-kanwil').value,
+    kapasitas: document.getElementById('k-kapasitas').value,
+    wbp: document.getElementById('k-wbp').value,
+    petugas: document.getElementById('k-petugas').value,
+    program: document.getElementById('k-program').value,
+    visi: document.getElementById('k-visi').value,
+    telp: document.getElementById('k-telp').value,
+    email: document.getElementById('k-email').value,
+    alamat: document.getElementById('k-alamat').value,
+    kunjungan: document.getElementById('k-kunjungan').value,
+  };
+  localStorage.setItem('lapas_konten', JSON.stringify(konten));
+  if (sheetURL) {
+    fetch(sheetURL + '?action=saveKonten&data=' + encodeURIComponent(JSON.stringify(konten)))
+      .then(() => toast('✅ Konten disimpan ke Spreadsheet!'))
+      .catch(() => toast('✅ Disimpan lokal (offline).'));
+  } else {
+    toast('✅ Konten disimpan secara lokal. Hubungkan spreadsheet untuk sinkronisasi.');
+  }
+}
+
+// ===== BERITA =====
+function renderBeritaList() {
+  const el = document.getElementById('berita-list');
+  if (!beritaList.length) { el.innerHTML = '<p style="color:var(--muted)">Belum ada berita.</p>'; return; }
+  el.innerHTML = beritaList.map((b, i) => `
+    <div class="berita-item">
+      <div class="berita-icon">${b.icon}</div>
+      <div class="berita-meta">
+        <strong>${b.judul}</strong>
+        <small><span class="badge badge-green" style="font-size:10px">${b.tag}</span> &nbsp; ${b.tanggal}</small>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">${b.isi}</div>
+      </div>
+      <div class="berita-actions">
+        <button class="btn btn-outline btn-sm" onclick="editBerita(${i})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="hapusBerita(${i})">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+function editBerita(i) {
+  const b = beritaList[i];
+  document.getElementById('b-idx').value = i;
+  document.getElementById('b-judul').value = b.judul;
+  document.getElementById('b-tag').value = b.tag;
+  document.getElementById('b-isi').value = b.isi;
+  document.getElementById('b-tanggal').value = b.tanggal;
+  document.getElementById('b-icon').value = b.icon;
+  openModal('modal-berita');
+}
+function saveBerita() {
+  const idx = parseInt(document.getElementById('b-idx').value);
+  const obj = {
+    judul: document.getElementById('b-judul').value,
+    tag: document.getElementById('b-tag').value,
+    isi: document.getElementById('b-isi').value,
+    tanggal: document.getElementById('b-tanggal').value,
+    icon: document.getElementById('b-icon').value || '📢'
+  };
+  if (idx >= 0) beritaList[idx] = obj; else beritaList.unshift(obj);
+  localStorage.setItem('lapas_berita', JSON.stringify(beritaList));
+  renderBeritaList();
+  closeModal('modal-berita');
+  toast('✅ Berita disimpan!');
+}
+function hapusBerita(i) {
+  if (!confirm('Hapus berita ini?')) return;
+  beritaList.splice(i, 1);
+  localStorage.setItem('lapas_berita', JSON.stringify(beritaList));
+  renderBeritaList();
+  toast('🗑️ Berita dihapus.');
+}
+
+// ===== LAYANAN =====
+function renderLayananList() {
+  const el = document.getElementById('layanan-list');
+  el.innerHTML = layananList.map((l, i) => `
+    <div class="berita-item">
+      <div class="berita-icon">${l.icon}</div>
+      <div class="berita-meta">
+        <strong>${l.nama}</strong>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">${l.desc}</div>
+      </div>
+      <div class="berita-actions">
+        <button class="btn btn-outline btn-sm" onclick="editLayanan(${i})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="hapusLayanan(${i})">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+function editLayanan(i) {
+  const l = layananList[i];
+  document.getElementById('l-idx').value = i;
+  document.getElementById('l-nama').value = l.nama;
+  document.getElementById('l-desc').value = l.desc;
+  document.getElementById('l-icon').value = l.icon;
+  openModal('modal-layanan');
+}
+function saveLayanan() {
+  const idx = parseInt(document.getElementById('l-idx').value);
+  const obj = {
+    nama: document.getElementById('l-nama').value,
+    desc: document.getElementById('l-desc').value,
+    icon: document.getElementById('l-icon').value || '📋'
+  };
+  if (idx >= 0) layananList[idx] = obj; else layananList.push(obj);
+  localStorage.setItem('lapas_layanan', JSON.stringify(layananList));
+  renderLayananList();
+  closeModal('modal-layanan');
+  toast('✅ Layanan disimpan!');
+}
+function hapusLayanan(i) {
+  if (!confirm('Hapus layanan ini?')) return;
+  layananList.splice(i, 1);
+  localStorage.setItem('lapas_layanan', JSON.stringify(layananList));
+  renderLayananList();
+  toast('🗑️ Layanan dihapus.');
+}
+
+// ===== COPY SCRIPT =====
+function copyScript() {
+  const txt = document.getElementById('apps-script-code').textContent;
+  navigator.clipboard.writeText(txt).then(() => toast('✅ Kode disalin ke clipboard!'));
+}
+
+// ===== GENERATE INDEX =====
+function generateIndex() {
+  if (!sheetURL) { toast('Hubungkan spreadsheet terlebih dahulu!'); return; }
+  const konten = JSON.parse(localStorage.getItem('lapas_konten') || '{}');
+  const berita = JSON.parse(localStorage.getItem('lapas_berita') || '[]');
+  const layanan = JSON.parse(localStorage.getItem('lapas_layanan') || '[]');
+  const blob = new Blob([buildIndex(sheetURL, konten, berita, layanan)], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  toast('✅ index.html berhasil diunduh!');
+}
+
+// ===== BUILD INDEX.HTML =====
+function buildIndex(apiURL, k, beritaArr, layananArr) {
+  const wbp = k.wbp || '87';
+  const petugas = k.petugas || '28';
+  const program = k.program || '6';
+  const namaLapas = k.nama || 'Lapas Kelas III Lirung';
+  const telp = k.telp || '(0432) 21XXX';
+  const email = k.email || 'lapas.lirung@kemenkumham.go.id';
+  const alamat = k.alamat || 'Jl. Utama No. 1, Lirung, Kab. Kepulauan Talaud, Sulawesi Utara';
+  const jam = k.kunjungan || 'Selasa, Kamis, Sabtu: 09.00 – 11.00 WITA';
+  const visi = k.visi || 'Terwujudnya Pemasyarakatan yang profesional dan akuntabel.';
+  const wilayah = k.wilayah || 'Kab. Kepulauan Talaud';
+  const kanwil = k.kanwil || 'Sulawesi Utara';
+  const kapasitas = k.kapasitas || '±100 WBP';
+
+  const beritaHTML = (beritaArr.length ? beritaArr : []).map(b => `
+    <div class="berita-card">
+      <div class="berita-img">${b.icon}</div>
+      <div class="berita-content">
+        <span class="berita-tag">${b.tag}</span>
+        <h3>${b.judul}</h3>
+        <p>${b.isi}</p>
+        <div class="berita-date">📅 ${b.tanggal}</div>
+      </div>
+    </div>`).join('');
+
+  const layananHTML = (layananArr.length ? layananArr : []).map(l => `
+    <div class="layanan-card">
+      <span class="layanan-icon">${l.icon}</span>
+      <h3>${l.nama}</h3>
+      <p>${l.desc}</p>
+    </div>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${namaLapas}</title>
+<style>
+  :root{--primary:#1a3a6e;--primary-light:#2453a0;--accent:#c8a84b;--accent-light:#f0d070;--bg:#f5f7fa;--white:#fff;--text:#1e2a3a;--text-muted:#556070;--border:#d8dde6;--red:#d93025;--green:#1e7e34;--yellow:#c7a100;--shadow:0 2px 12px rgba(26,58,110,.10)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+  .topbar{background:var(--primary);color:rgba(255,255,255,.85);font-size:12px;padding:6px 0;border-bottom:2px solid var(--accent)}
+  .topbar .inner{max-width:1100px;margin:auto;padding:0 20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+  header{background:var(--white);border-bottom:3px solid var(--accent);box-shadow:var(--shadow);position:sticky;top:0;z-index:100}
+  .header-inner{max-width:1100px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:16px}
+  .logo-circle{width:64px;height:64px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent-light);font-weight:bold;flex-shrink:0;border:3px solid var(--accent)}
+  .logo-text h1{font-size:16px;font-weight:700;color:var(--primary);line-height:1.2}
+  .logo-text p{font-size:12px;color:var(--text-muted);margin-top:2px}
+  nav{background:var(--primary)}
+  nav ul{max-width:1100px;margin:auto;padding:0 20px;list-style:none;display:flex;flex-wrap:wrap}
+  nav ul li a{display:block;color:rgba(255,255,255,.88);text-decoration:none;padding:13px 18px;font-size:13.5px;font-weight:500;transition:background .2s,color .2s;border-bottom:3px solid transparent}
+  nav ul li a:hover,nav ul li a.active{background:rgba(255,255,255,.1);color:var(--accent-light);border-bottom-color:var(--accent)}
+  .hero{background:linear-gradient(135deg,var(--primary) 60%,var(--primary-light) 100%);color:white;padding:60px 20px;text-align:center}
+  .hero-inner{max-width:800px;margin:auto}
+  .hero h2{font-size:30px;font-weight:700;margin-bottom:12px}
+  .hero p{font-size:16px;opacity:.9;margin-bottom:28px;line-height:1.7}
+  .hero-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+  .badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600}
+  section{max-width:1100px;margin:0 auto;padding:48px 20px}
+  .section-title{text-align:center;margin-bottom:36px}
+  .section-title h2{font-size:24px;font-weight:700;color:var(--primary);display:inline-block;position:relative;padding-bottom:10px}
+  .section-title h2::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:50px;height:3px;background:var(--accent);border-radius:2px}
+  .section-title p{color:var(--text-muted);margin-top:10px;font-size:14px}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
+  .stat-card{background:var(--white);border-radius:12px;padding:24px 16px;text-align:center;box-shadow:var(--shadow);border-top:4px solid var(--accent)}
+  .stat-num{font-size:36px;font-weight:700;color:var(--primary);line-height:1}
+  .stat-label{font-size:12px;color:var(--text-muted);margin-top:6px;font-weight:500}
+  .profil-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+  @media(max-width:680px){.profil-grid{grid-template-columns:1fr}}
+  .card{background:var(--white);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+  .card-header{background:var(--primary);color:var(--accent-light);padding:14px 20px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .card-body{padding:20px}
+  .info-row{display:flex;padding:10px 0;border-bottom:1px solid var(--border);gap:12px}
+  .info-row:last-child{border-bottom:none}
+  .info-label{min-width:130px;font-size:13px;color:var(--text-muted);font-weight:500}
+  .info-val{font-size:13.5px;color:var(--text);flex:1}
+  .visi-box{background:var(--primary);color:white;border-radius:12px;padding:28px 24px;margin-bottom:16px}
+  .visi-box h3{font-size:13px;color:var(--accent-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+  .visi-box p{font-size:15px;line-height:1.7}
+  .misi-list{list-style:none;padding:0}
+  .misi-list li{padding:10px 0 10px 28px;border-bottom:1px solid var(--border);position:relative;font-size:14px}
+  .misi-list li:last-child{border-bottom:none}
+  .misi-list li::before{content:'✓';position:absolute;left:0;color:var(--accent);font-weight:700;font-size:16px}
+  .layanan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+  .layanan-card{background:var(--white);border-radius:12px;padding:24px 18px;box-shadow:var(--shadow);text-align:center;border-bottom:4px solid var(--primary-light);transition:transform .2s}
+  .layanan-card:hover{transform:translateY(-4px)}
+  .layanan-icon{font-size:36px;margin-bottom:12px;display:block}
+  .layanan-card h3{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:8px}
+  .layanan-card p{font-size:12.5px;color:var(--text-muted)}
+  .berita-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  .berita-card{background:var(--white);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;transition:transform .2s}
+  .berita-card:hover{transform:translateY(-3px)}
+  .berita-img{height:160px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--accent-light)}
+  .berita-content{padding:18px}
+  .berita-tag{display:inline-block;background:#e8f0fe;color:var(--primary);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+  .berita-content h3{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4}
+  .berita-content p{font-size:13px;color:var(--text-muted);line-height:1.6}
+  .berita-date{font-size:12px;color:var(--text-muted);margin-top:10px}
+  .rating-section{background:var(--white);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;max-width:820px;margin:0 auto}
+  .rating-header{background:var(--primary);color:white;padding:28px 32px;text-align:center}
+  .rating-header h2{font-size:22px;font-weight:700;margin-bottom:8px}
+  .rating-header p{opacity:.85;font-size:14px}
+  .rating-body{padding:32px}
+  .rating-buttons{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+  .rating-btn{display:flex;flex-direction:column;align-items:center;gap:10px;background:none;border:2.5px solid var(--border);border-radius:16px;padding:24px 28px;cursor:pointer;transition:all .25s;min-width:150px;font-family:inherit}
+  .rating-btn:hover{border-color:var(--primary-light);background:#f0f4fb;transform:scale(1.04)}
+  .rating-btn.selected{border-color:transparent;color:white;transform:scale(1.06);box-shadow:0 4px 20px rgba(0,0,0,.15)}
+  .rating-btn.kurang.selected{background:var(--red)}
+  .rating-btn.baik.selected{background:var(--yellow)}
+  .rating-btn.sangat-baik.selected{background:var(--green)}
+  .rating-emoji{font-size:42px;line-height:1}
+  .rating-label{font-size:14px;font-weight:700}
+  .rating-desc{font-size:11px;opacity:.8;text-align:center}
+  .form-group{margin-bottom:18px}
+  .form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+  .form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg);transition:border .2s}
+  .form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary-light)}
+  .form-group textarea{resize:vertical;min-height:80px}
+  .submit-btn{width:100%;background:var(--primary);color:white;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;font-family:inherit;margin-top:8px}
+  .submit-btn:hover{background:var(--primary-light)}
+  .rating-results{border-top:1px solid var(--border);margin-top:32px;padding-top:28px}
+  .rating-results h3{font-size:16px;font-weight:700;color:var(--primary);margin-bottom:20px;text-align:center}
+  .result-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .result-label{min-width:110px;font-size:13px;font-weight:600}
+  .result-bar-wrap{flex:1;height:16px;background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+  .result-bar{height:100%;border-radius:10px;transition:width .8s ease}
+  .bar-kurang{background:var(--red)}.bar-baik{background:var(--yellow)}.bar-sangat-baik{background:var(--green)}
+  .result-count{min-width:40px;font-size:13px;font-weight:700;text-align:right}
+  .thank-you{display:none;text-align:center;padding:20px;background:#f0faf4;border-radius:12px;border:2px solid #c3e6cb;margin-top:16px}
+  .thank-you.show{display:block}
+  .thank-you p{font-size:16px;font-weight:600;color:var(--green)}
+  .peta-wrap{border-radius:12px;overflow:hidden;box-shadow:var(--shadow);border:2px solid var(--border)}
+  .peta-placeholder{height:300px;background:linear-gradient(160deg,#e8edf5,#d0d9ec);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--primary)}
+  .peta-placeholder span{font-size:48px}
+  footer{background:var(--primary);color:rgba(255,255,255,.85);padding:48px 20px 20px;margin-top:60px}
+  .footer-inner{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px;margin-bottom:36px}
+  .footer-col h3{color:var(--accent-light);font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid rgba(200,168,75,.3)}
+  .footer-col p,.footer-col li{font-size:13px;line-height:1.8;list-style:none}
+  .footer-col a{color:rgba(255,255,255,.7);text-decoration:none}
+  .footer-bottom{max-width:1100px;margin:auto;border-top:1px solid rgba(255,255,255,.12);padding-top:18px;font-size:12px;color:rgba(255,255,255,.5);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .divider{border:none;border-top:2px solid var(--border);margin:0}
+  @media(max-width:600px){.hero h2{font-size:22px}.rating-buttons{flex-direction:column;align-items:center}.rating-btn{width:100%;max-width:300px;flex-direction:row;justify-content:center}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="inner"><span>📍 ${alamat}</span><span>☎ ${telp} &nbsp;|&nbsp; ✉ ${email}</span></div></div>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:14px;flex:1">
+      <div class="logo-circle">⚖</div>
+      <div class="logo-text">
+        <h1>${namaLapas.toUpperCase()}</h1>
+        <p>Kantor Wilayah Kementerian Hukum dan HAM ${kanwil}</p>
+      </div>
+    </div>
+  </div>
+</header>
+<nav><ul>
+  <li><a href="#beranda" class="active">🏠 Beranda</a></li>
+  <li><a href="#profil">📋 Profil</a></li>
+  <li><a href="#layanan">🛎 Layanan</a></li>
+  <li><a href="#berita">📰 Berita</a></li>
+  <li><a href="#rating">⭐ Penilaian</a></li>
+  <li><a href="#kontak">📍 Kontak</a></li>
+</ul></nav>
+<div id="beranda">
+  <div class="hero">
+    <div class="hero-inner">
+      <h2>Selamat Datang di Website Resmi<br>${namaLapas}</h2>
+      <p>Melayani dengan integritas, membina dengan kemanusiaan.<br>Mewujudkan pemasyarakatan yang berkeadilan dan bermartabat.</p>
+      <div class="hero-badges"><span class="badge">🏛 Kemenkumham RI</span><span class="badge">🌴 ${wilayah}</span><span class="badge">🛡 Kelas III</span></div>
+    </div>
+  </div>
+</div>
+<div style="background:var(--white);border-bottom:1px solid var(--border)">
+  <section style="padding:32px 20px">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" id="wbp-count">0</div><div class="stat-label">Warga Binaan (WBP)</div></div>
+      <div class="stat-card"><div class="stat-num">${petugas}</div><div class="stat-label">Petugas Aktif</div></div>
+      <div class="stat-card"><div class="stat-num">${program}</div><div class="stat-label">Program Pembinaan</div></div>
+      <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Blok Hunian</div></div>
+      <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Komitmen Pelayanan</div></div>
+    </div>
+  </section>
+</div>
+<hr class="divider">
+<div id="profil"><section>
+  <div class="section-title"><h2>Profil Lembaga</h2><p>Informasi umum mengenai ${namaLapas}</p></div>
+  <div class="profil-grid">
+    <div class="card">
+      <div class="card-header">📋 Informasi Umum</div>
+      <div class="card-body">
+        <div class="info-row"><span class="info-label">Nama Instansi</span><span class="info-val">${namaLapas}</span></div>
+        <div class="info-row"><span class="info-label">Klasifikasi</span><span class="info-val">${k.kelas||'Kelas III'}</span></div>
+        <div class="info-row"><span class="info-label">Wilayah Kerja</span><span class="info-val">${wilayah}</span></div>
+        <div class="info-row"><span class="info-label">Kanwil</span><span class="info-val">${kanwil}</span></div>
+        <div class="info-row"><span class="info-label">Kementerian</span><span class="info-val">Hukum dan Hak Asasi Manusia RI</span></div>
+        <div class="info-row"><span class="info-label">Kapasitas</span><span class="info-val">${kapasitas}</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="visi-box"><h3>Visi</h3><p>${visi}</p></div>
+      <div class="card">
+        <div class="card-header">🎯 Misi</div>
+        <div class="card-body">
+          <ul class="misi-list">
+            <li>Menyelenggarakan pembinaan narapidana secara profesional dan berkemanusiaan</li>
+            <li>Memberikan pelayanan prima kepada masyarakat pencari keadilan</li>
+            <li>Mewujudkan tata kelola pemerintahan yang bersih dan bebas KKN</li>
+            <li>Meningkatkan kualitas SDM petugas pemasyarakatan</li>
+            <li>Menjamin terpenuhinya hak-hak narapidana sesuai peraturan perundang-undangan</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section></div>
+<hr class="divider">
+<div id="layanan" style="background:#f9fafb"><section>
+  <div class="section-title"><h2>Layanan Kami</h2><p>Berbagai layanan yang tersedia di ${namaLapas}</p></div>
+  <div class="layanan-grid">${layananHTML}</div>
+</section></div>
+<hr class="divider">
+<div id="berita"><section>
+  <div class="section-title"><h2>Berita &amp; Kegiatan</h2><p>Informasi terkini seputar kegiatan ${namaLapas}</p></div>
+  <div class="berita-grid">${beritaHTML}</div>
+</section></div>
+<hr class="divider">
+<div id="rating" style="background:#f0f4fb"><section>
+  <div class="section-title"><h2>Penilaian Kepuasan Layanan</h2><p>Berikan penilaian Anda untuk membantu kami meningkatkan kualitas pelayanan</p></div>
+  <div class="rating-section">
+    <div class="rating-header"><h2>Survei Kepuasan Masyarakat</h2><p>Penilaian Anda sangat berarti bagi perbaikan layanan kami</p></div>
+    <div class="rating-body">
+      <div class="form-group">
+        <label>Pilih Jenis Layanan yang Dinilai:</label>
+        <select id="layanan-select">
+          <option value="">-- Pilih Layanan --</option>
+          ${layananArr.map(l => '<option>' + l.nama + '</option>').join('')}
+        </select>
+      </div>
+      <p style="text-align:center;font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px">Berikan Penilaian Anda:</p>
+      <div class="rating-buttons">
+        <button class="rating-btn kurang" onclick="selectRating('kurang',this)"><span class="rating-emoji">😞</span><span class="rating-label">Kurang</span><span class="rating-desc">Perlu banyak perbaikan</span></button>
+        <button class="rating-btn baik" onclick="selectRating('baik',this)"><span class="rating-emoji">🙂</span><span class="rating-label">Baik</span><span class="rating-desc">Sudah cukup memuaskan</span></button>
+        <button class="rating-btn sangat-baik" onclick="selectRating('sangat-baik',this)"><span class="rating-emoji">😄</span><span class="rating-label">Sangat Baik</span><span class="rating-desc">Layanan luar biasa</span></button>
+      </div>
+      <div class="form-group"><label>Saran / Masukan (opsional):</label><textarea id="saran" placeholder="Tuliskan saran atau masukan Anda..."></textarea></div>
+      <button class="submit-btn" onclick="submitRating()">Kirim Penilaian ➤</button>
+      <div class="thank-you" id="thank-you"><p>✅ Terima kasih atas penilaian Anda!</p><small>Masukan Anda sangat membantu kami meningkatkan kualitas layanan.</small></div>
+      <div class="rating-results" id="rating-results">
+        <h3>Rekap Penilaian Kepuasan Layanan</h3>
+        <div class="result-row"><span class="result-label">😞 Kurang</span><div class="result-bar-wrap"><div class="result-bar bar-kurang" id="bar-kurang" style="width:0%"></div></div><span class="result-count" id="count-kurang">0</span></div>
+        <div class="result-row"><span class="result-label">🙂 Baik</span><div class="result-bar-wrap"><div class="result-bar bar-baik" id="bar-baik" style="width:0%"></div></div><span class="result-count" id="count-baik">0</span></div>
+        <div class="result-row"><span class="result-label">😄 Sangat Baik</span><div class="result-bar-wrap"><div class="result-bar bar-sangat-baik" id="bar-sangat-baik" style="width:0%"></div></div><span class="result-count" id="count-sangat-baik">0</span></div>
+        <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:16px" id="total-text">Memuat data...</p>
+      </div>
+    </div>
+  </div>
+</section></div>
+<hr class="divider">
+<div id="kontak"><section>
+  <div class="section-title"><h2>Lokasi &amp; Kontak</h2><p>Temukan kami di Lirung, Kabupaten Kepulauan Talaud</p></div>
+  <div class="profil-grid">
+    <div class="card">
+      <div class="card-header">📞 Informasi Kontak</div>
+      <div class="card-body">
+        <div class="info-row"><span class="info-label">📍 Alamat</span><span class="info-val">${alamat}</span></div>
+        <div class="info-row"><span class="info-label">☎ Telepon</span><span class="info-val">${telp}</span></div>
+        <div class="info-row"><span class="info-label">✉ Email</span><span class="info-val">${email}</span></div>
+        <div class="info-row"><span class="info-label">🕐 Jam Kerja</span><span class="info-val">Senin – Jumat: 07.30 – 16.00 WITA</span></div>
+        <div class="info-row"><span class="info-label">🗓 Kunjungan</span><span class="info-val">${jam}</span></div>
+      </div>
+    </div>
+    <div class="peta-wrap">
+      <div class="peta-placeholder"><span>🗺</span><p>${namaLapas}</p><small>${wilayah}, ${kanwil}</small><small style="margin-top:8px;color:var(--primary)">📌 Koordinat: 4.065°LU, 126.597°BT</small></div>
+    </div>
+  </div>
+</section></div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h3>${namaLapas}</h3><p>Unit Pelaksana Teknis di bawah Kantor Wilayah Kementerian Hukum dan HAM ${kanwil}.</p></div>
+    <div class="footer-col"><h3>Tautan Cepat</h3><ul><li><a href="#beranda">Beranda</a></li><li><a href="#profil">Profil</a></li><li><a href="#layanan">Layanan</a></li><li><a href="#berita">Berita</a></li><li><a href="#rating">Penilaian</a></li></ul></div>
+    <div class="footer-col"><h3>Tautan Terkait</h3><ul><li><a href="https://kemenkumham.go.id" target="_blank">Kemenkumham RI</a></li><li><a href="https://ditjenpas.go.id" target="_blank">Ditjen Pemasyarakatan</a></li><li><a href="https://kanwilsulut.kemenkumham.go.id" target="_blank">Kanwil Sulawesi Utara</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 ${namaLapas} — Kemenkumham RI</span><span>Dibuat dengan semangat pelayanan publik</span></div>
+</footer>
+<script>
+const API_URL = '${apiURL}';
+let sel = null;
+
+let t=0;const wbpT=${wbp};const ti=setInterval(()=>{t+=3;if(t>=wbpT){t=wbpT;clearInterval(ti);}document.getElementById('wbp-count').textContent=t;},30);
+
+function selectRating(v,btn){sel=v;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+
+function submitRating(){
+  if(!sel){alert('Silakan pilih penilaian terlebih dahulu.');return;}
+  const layanan=document.getElementById('layanan-select').value;
+  if(!layanan){alert('Silakan pilih jenis layanan yang ingin dinilai.');return;}
+  const saran=document.getElementById('saran').value;
+  const penilaian=sel==='kurang'?'Kurang':sel==='baik'?'Baik':'Sangat Baik';
+  fetch(API_URL,{method:'POST',body:JSON.stringify({layanan,penilaian,saran})})
+    .catch(()=>{});
+  document.getElementById('thank-you').classList.add('show');
+  document.getElementById('saran').value='';
+  document.getElementById('layanan-select').value='';
+  sel=null;
+  document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
+  setTimeout(()=>document.getElementById('thank-you').classList.remove('show'),5000);
+  loadRating();
+}
+
+function loadRating(){
+  fetch(API_URL+'?action=getSurvei').then(r=>r.json()).then(data=>{
+    const total=data.length;
+    const sb=data.filter(r=>r.penilaian&&r.penilaian.toLowerCase().includes('sangat')).length;
+    const baik=data.filter(r=>r.penilaian&&r.penilaian.toLowerCase()==='baik').length;
+    const kurang=data.filter(r=>r.penilaian&&r.penilaian.toLowerCase()==='kurang').length;
+    if(total===0)return;
+    document.getElementById('bar-sangat-baik').style.width=Math.round(sb/total*100)+'%';
+    document.getElementById('bar-baik').style.width=Math.round(baik/total*100)+'%';
+    document.getElementById('bar-kurang').style.width=Math.round(kurang/total*100)+'%';
+    document.getElementById('count-sangat-baik').textContent=sb;
+    document.getElementById('count-baik').textContent=baik;
+    document.getElementById('count-kurang').textContent=kurang;
+    document.getElementById('total-text').textContent='Total: '+total+' penilaian';
+  }).catch(()=>{document.getElementById('total-text').textContent='Gagal memuat data.';});
+}
+loadRating();
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('nav a').forEach(n=>n.classList.remove('active'));this.classList.add('active');});});
+<\/script>
+</body>
+</html>`;
+}
+</script>
+</body>
+</html>
